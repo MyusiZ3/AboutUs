@@ -18,7 +18,7 @@
         >
           <div class="item-info">
             <span class="item-title font-editorial">Campur Semua Edisi</span>
-            <span class="item-count">225 Kartu Kompleks</span>
+            <span class="item-count">250 Kartu Lengkap</span>
           </div>
           <span class="check-icon" v-if="currentEditionId === 'all'">✓</span>
         </div>

@@ -61,7 +61,7 @@
             @click="selectEdition('all')"
           >
             <div class="edition-card-header">
-              <span class="edition-count-badge">225 Kartu</span>
+              <span class="edition-count-badge">250 Kartu Total</span>
               <span class="check-mark" v-if="selectedEditionId === 'all'">✓</span>
             </div>
             <h3 class="edition-card-title font-editorial">Campur Semua Edisi</h3>
@@ -78,7 +78,7 @@
             @click="selectEdition(key)"
           >
             <div class="edition-card-header">
-              <span class="edition-count-badge">45 Kartu</span>
+              <span class="edition-count-badge">50 Kartu</span>
               <span class="check-mark" v-if="selectedEditionId === key">✓</span>
             </div>
             <h3 class="edition-card-title font-editorial">{{ ed.title }}</h3>
@@ -98,7 +98,7 @@
 
         <div class="level-options">
           <div 
-            v-for="lvl in levelOptions" 
+            v-for="lvl in computedLevelOptions" 
             :key="lvl.value"
             class="level-card"
             :class="{ active: selectedLevel === lvl.value }"
@@ -130,8 +130,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { EDITIONS } from '../data/questions.js';
+import { ref, computed } from 'vue';
+import { EDITIONS, QUESTIONS } from '../data/questions.js';
 import { playButtonClickSound } from '../utils/audio.js';
 
 const emit = defineEmits(['start-game']);
@@ -140,14 +140,30 @@ const editions = EDITIONS;
 const playerCount = ref(2);
 const playerNames = ref(['Pemain 1', 'Pemain 2']);
 const selectedEditionId = ref('pasangan');
-const selectedLevel = ref(0); // 0 = All
+const selectedLevel = ref(0); // 0 = Semua Tingkat
 
-const levelOptions = [
-  { value: 0, label: 'Semua Tingkat', desc: 'Variasi lengkap dari pertanyaan santai hingga mendalam' },
-  { value: 1, label: 'Tingkat 1: Ringan & Nostalgia', desc: 'Cocok untuk pembuka percakapan dan kenangan manis' },
-  { value: 2, label: 'Tingkat 2: Mendalam & Perspektif', desc: 'Membahas nilai hidup, ekspektasi, dan cara pandang' },
-  { value: 3, label: 'Tingkat 3: Serius & Reflektif', desc: 'Topik jujur mengenai kerentanan, komitmen, dan rasa percaya' }
-];
+function getCardCounts(editionId) {
+  let list = QUESTIONS;
+  if (editionId !== 'all') {
+    list = list.filter(q => q.edition === editionId);
+  }
+  return {
+    all: list.length,
+    lvl1: list.filter(q => q.level === 1).length,
+    lvl2: list.filter(q => q.level === 2).length,
+    lvl3: list.filter(q => q.level === 3).length
+  };
+}
+
+const computedLevelOptions = computed(() => {
+  const counts = getCardCounts(selectedEditionId.value);
+  return [
+    { value: 0, label: `Semua Tingkat (${counts.all} Kartu Lengkap)`, desc: 'Variasi lengkap dari pertanyaan santai hingga mendalam' },
+    { value: 1, label: `Tingkat 1: Ringan & Nostalgia (${counts.lvl1} Kartu)`, desc: 'Cocok untuk pembuka percakapan dan kenangan manis' },
+    { value: 2, label: `Tingkat 2: Mendalam & Perspektif (${counts.lvl2} Kartu)`, desc: 'Membahas nilai hidup, ekspektasi, dan cara pandang' },
+    { value: 3, label: `Tingkat 3: Serius & Reflektif (${counts.lvl3} Kartu)`, desc: 'Topik jujur mengenai kerentanan, komitmen, dan rasa percaya' }
+  ];
+});
 
 function setPlayerCount(count) {
   playButtonClickSound();
@@ -166,7 +182,6 @@ function selectEdition(key) {
 
 function handleStart() {
   playButtonClickSound();
-  // Filter clean empty names
   const cleanedNames = playerNames.value.map((n, i) => n.trim() || `Pemain ${i + 1}`);
   emit('start-game', {
     players: cleanedNames,
@@ -178,27 +193,27 @@ function handleStart() {
 
 <style scoped>
 .setup-wrapper {
-  padding-top: 3rem;
-  padding-bottom: 4rem;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
 }
 
 .setup-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .setup-title {
-  font-size: 2.5rem;
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  font-size: 2.3rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   color: var(--text-main);
   line-height: 1.15;
 }
 
 .setup-desc {
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: var(--text-muted);
-  max-width: 620px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -206,14 +221,14 @@ function handleStart() {
   background-color: var(--bg-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-medium);
-  padding: 2.5rem;
+  padding: 2.25rem;
   box-shadow: var(--shadow-soft);
 }
 
 .setup-section {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .section-label-group {
@@ -230,7 +245,7 @@ function handleStart() {
 }
 
 .section-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
 }
@@ -238,7 +253,7 @@ function handleStart() {
 .section-divider {
   height: 1px;
   background-color: var(--border-light);
-  margin: 2rem 0;
+  margin: 1.75rem 0;
 }
 
 /* Player Count */
@@ -257,13 +272,13 @@ function handleStart() {
 }
 
 .count-btn {
-  padding: 0.6rem 1.2rem;
+  padding: 0.55rem 1.1rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-medium);
   background: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-smooth);
@@ -281,29 +296,29 @@ function handleStart() {
 
 .player-names-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.35rem;
 }
 
 .field-label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .name-input {
   width: 100%;
-  padding: 0.7rem 1rem;
+  padding: 0.65rem 0.9rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-medium);
   background: var(--bg-main);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-main);
   outline: none;
   transition: var(--transition-smooth);
@@ -318,15 +333,15 @@ function handleStart() {
 /* Editions Grid */
 .editions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.85rem;
 }
 
 .edition-card {
   border-radius: var(--radius-md);
   border: 1.5px solid var(--border-light);
   background-color: var(--card-bg, var(--bg-main));
-  padding: 1.25rem;
+  padding: 1.1rem;
   cursor: pointer;
   transition: var(--transition-smooth);
   position: relative;
@@ -342,7 +357,7 @@ function handleStart() {
 
 .edition-card.active {
   border-color: var(--card-accent, var(--text-main));
-  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 18px -4px rgba(0,0,0,0.08);
   border-width: 2px;
 }
 
@@ -355,11 +370,11 @@ function handleStart() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
 }
 
 .edition-count-badge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -367,43 +382,43 @@ function handleStart() {
 }
 
 .check-mark {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: var(--text-main);
   color: var(--bg-main);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
 .edition-card-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-main);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
   line-height: 1.2;
 }
 
 .edition-card-desc {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 /* Level Options */
 .level-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.75rem;
 }
 
 .level-card {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.85rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   background: var(--bg-main);
@@ -422,8 +437,8 @@ function handleStart() {
 }
 
 .level-radio {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: 2px solid var(--border-medium);
   margin-top: 2px;
@@ -438,15 +453,15 @@ function handleStart() {
 }
 
 .radio-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--text-main);
 }
 
 .level-title {
   display: block;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 0.15rem;
@@ -454,13 +469,13 @@ function handleStart() {
 
 .level-desc {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .setup-actions {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   display: flex;
   justify-content: center;
 }
@@ -468,8 +483,8 @@ function handleStart() {
 .btn-start {
   width: 100%;
   max-width: 320px;
-  padding: 1rem 2rem;
-  font-size: 1.05rem;
+  padding: 0.95rem 1.8rem;
+  font-size: 1rem;
 }
 
 @media (max-width: 640px) {

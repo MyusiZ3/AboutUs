@@ -375,6 +375,41 @@ export const QUESTIONS = [
     category: 'Harapan Utama',
     question: 'Apa pesan penting yang ingin kamu titipkan padaku untuk diingat jika suatu saat hubungan kita diterpa badai besar?'
   },
+  {
+    id: 'pas-46',
+    edition: 'pasangan',
+    level: 1,
+    category: 'Kencan Spesial',
+    question: 'Tempat kencan mana yang paling membuatmu merasa hangat dan ingin kita kunjungi kembali berdua?'
+  },
+  {
+    id: 'pas-47',
+    edition: 'pasangan',
+    level: 2,
+    category: 'Perhatian Kecil',
+    question: 'Bentuk perhatian sederhana dariku apa yang selalu berhasil membuatmu tersenyum bahkan di hari yang lelah?'
+  },
+  {
+    id: 'pas-48',
+    edition: 'pasangan',
+    level: 2,
+    category: 'Saling Membantu',
+    question: 'Jika aku bisa membantu meringankan satu beban pikiranmu minggu ini, bantuan apa yang paling kamu butuhkan?'
+  },
+  {
+    id: 'pas-49',
+    edition: 'pasangan',
+    level: 3,
+    category: 'Visi Bersama',
+    question: 'Impian besar apa tentang perjalanan hubungan kita yang paling tidak sabar ingin kamu rayakan di masa depan?'
+  },
+  {
+    id: 'pas-50',
+    edition: 'pasangan',
+    level: 3,
+    category: 'Rasa Percaya',
+    question: 'Hal apa dari karakterku yang membuatmu merasa sangat aman dan yakin menyerahkan hatimu?'
+  },
 
   // ==========================================
   // EDISI SAHABAT & TEMAN (45 KARTU)
@@ -693,6 +728,41 @@ export const QUESTIONS = [
     level: 3,
     category: 'Doa & Harapan',
     question: 'Apa harapan paling tulus yang selalu kamu aminkan untuk kehidupan dan kebahagiaanku?'
+  },
+  {
+    id: 'tem-46',
+    edition: 'teman',
+    level: 1,
+    category: 'Momen Kejutan',
+    question: 'Momen perayaan atau kejutan bersama teman-teman mana yang paling berkesan dalam hidupmu?'
+  },
+  {
+    id: 'tem-47',
+    edition: 'teman',
+    level: 2,
+    category: 'Tradisi Bicara',
+    question: 'Kebiasaan sederhana dalam pertemanan kita mana yang paling kamu harapkan tidak pernah pudar seiring usia?'
+  },
+  {
+    id: 'tem-48',
+    edition: 'teman',
+    level: 2,
+    category: 'Ruang Aman',
+    question: 'Dalam hal apa kamu merasa persahabatan ini menjadi tempat perlindungan yang paling nyaman bagimu?'
+  },
+  {
+    id: 'tem-49',
+    edition: 'teman',
+    level: 3,
+    category: 'Pendewasaan Bersama',
+    question: 'Bagaimana kita saling membantu belajar menjadi manusia yang lebih bijaksana seiring berjalannya waktu?'
+  },
+  {
+    id: 'tem-50',
+    edition: 'teman',
+    level: 3,
+    category: 'Ketulusan Hati',
+    question: 'Apa doa atau harapan paling mendalam yang selalu kamu simpan diam-diam untuk keberhasilan sahabatmu?'
   },
 
   // ==========================================
@@ -1013,6 +1083,41 @@ export const QUESTIONS = [
     category: 'Ikrar Kesetiaan',
     question: 'Satu janji tulus apa yang ingin kamu gaungkan dan pertahankan untuk pasanganmu selamanya?'
   },
+  {
+    id: 'nik-46',
+    edition: 'pernikahan',
+    level: 1,
+    category: 'Kenyamanan Rumah',
+    question: 'Suasana malam hari seperti apa di rumah yang paling kamu bayangkan membuat pikiran menjadi tenang?'
+  },
+  {
+    id: 'nik-47',
+    edition: 'pernikahan',
+    level: 2,
+    category: 'Tujuan Finansial',
+    question: 'Prinsip atau tujuan keuangan utama apa yang ingin kita raih bersama dalam 5 tahun pertama pernikahan?'
+  },
+  {
+    id: 'nik-48',
+    edition: 'pernikahan',
+    level: 2,
+    category: 'Komunikasi Saat Lelah',
+    question: 'Bagaimana cara terbaik agar kita tetap saling mendengarkan saat sama-sama lelah sepulang bekerja?'
+  },
+  {
+    id: 'nik-49',
+    edition: 'pernikahan',
+    level: 3,
+    category: 'Kompas Rumah Tangga',
+    question: 'Nilai atau prinsip utama apa yang akan menjadi kompas rumah tangga kita di kala ada ujian berat?'
+  },
+  {
+    id: 'nik-50',
+    edition: 'pernikahan',
+    level: 3,
+    category: 'Kisah Masa Depan',
+    question: 'Kisah manis seperti apa tentang perjalanan cinta kita yang paling ingin kamu ceritakan kepada anak cucu kelak?'
+  },
 
   // ==========================================
   // EDISI REFLEKSI & DIRI SENDIRI (45 KARTU)
@@ -1332,6 +1437,41 @@ export const QUESTIONS = [
     category: 'Pesan Perdamaian',
     question: 'Tuliskan kalimat penutup sebagai janji untuk selalu menyayangi dirimu sendiri di segala keadaan.'
   },
+  {
+    id: 'ref-46',
+    edition: 'refleksi',
+    level: 1,
+    category: 'KeheninganJiwa',
+    question: 'Momen keheningan seperti apa yang paling membuat jiwamu merasa tenang dan damai dari hiruk pikuk?'
+  },
+  {
+    id: 'ref-47',
+    edition: 'refleksi',
+    level: 2,
+    category: 'Keberanian',
+    question: 'Pelajaran terpenting apa tentang keberanian yang kamu dapatkan dari kegagalan di masa lalu?'
+  },
+  {
+    id: 'ref-48',
+    edition: 'refleksi',
+    level: 2,
+    category: 'PenerimaanDiri',
+    question: 'Bagaimana caramu mengingatkan diri sendiri bahwa kamu sudah berjuang dengan sangat baik hingga hari ini?'
+  },
+  {
+    id: 'ref-49',
+    edition: 'refleksi',
+    level: 3,
+    category: 'PertumbuhanJiwa',
+    question: 'Bagian mana dari dirimu yang merasa paling bersyukur atas proses pendewasaan yang telah kamu lewati?'
+  },
+  {
+    id: 'ref-50',
+    edition: 'refleksi',
+    level: 3,
+    category: 'Jejak Hidup',
+    question: 'Jejak kebaikan seperti apa yang paling ingin kamu tinggalkan bagi orang-orang tersayang di sekitarmu?'
+  },
 
   // ==========================================
   // EDISI KELUARGA & NOSTALGIA (45 KARTU)
@@ -1650,5 +1790,40 @@ export const QUESTIONS = [
     level: 3,
     category: 'Pesan Keabadian',
     question: 'Pesan kasih apa yang ingin kamu tinggalkan untuk generasi keluargamu di masa mendatang?'
+  },
+  {
+    id: 'kel-46',
+    edition: 'keluarga',
+    level: 1,
+    category: 'Makan Bersama',
+    question: 'Kebiasaan makan bersama di meja makan rumah mana yang paling kamu rindukan?'
+  },
+  {
+    id: 'kel-47',
+    edition: 'keluarga',
+    level: 2,
+    category: 'Pelajaran Sederhana',
+    question: 'Pelajaran sederhana dari rumah masa kecilmu mana yang paling membentuk prinsip hidupmu hingga kini?'
+  },
+  {
+    id: 'kel-48',
+    edition: 'keluarga',
+    level: 2,
+    category: 'Suasana Hangat',
+    question: 'Momen kehangatan keluarga seperti apa yang paling ingin kamu ciptakan kembali di masa mendatang?'
+  },
+  {
+    id: 'kel-49',
+    edition: 'keluarga',
+    level: 3,
+    category: 'Terima Kasih Tulus',
+    question: 'Ucapan terima kasih tulus seperti apa yang ingin kamu sampaikan kepada orang tua atau keluargamu?'
+  },
+  {
+    id: 'kel-50',
+    edition: 'keluarga',
+    level: 3,
+    category: 'Prinsip Kehormatan',
+    question: 'Prinsip utama keluarga mana yang paling kamu banggakan dan ingin kamu jaga selamanya?'
   }
 ];
