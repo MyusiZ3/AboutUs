@@ -13,7 +13,13 @@
       <!-- Right: Action Icons -->
       <div class="nav-actions">
         <!-- Current Active Edition Badge (if in game) -->
-        <div v-if="activeEdition" class="edition-pill" :style="{ backgroundColor: activeEdition.themeColor + '20', borderColor: activeEdition.themeColor }">
+        <div 
+          v-if="isPlaying && activeEdition" 
+          class="edition-pill clickable-pill" 
+          :style="{ backgroundColor: activeEdition.themeColor + '20', borderColor: activeEdition.themeColor }"
+          @click="$emit('open-edition-drawer')"
+          title="Klik untuk ganti edisi"
+        >
           <span class="dot" :style="{ backgroundColor: activeEdition.themeColor }"></span>
           <span class="edition-name">{{ activeEdition.title }}</span>
         </div>
@@ -82,7 +88,7 @@ const props = defineProps({
   savedCount: Number
 });
 
-const emit = defineEmits(['reset-to-home', 'open-rules', 'open-saved']);
+const emit = defineEmits(['reset-to-home', 'open-rules', 'open-saved', 'open-edition-drawer']);
 
 const soundOn = ref(isSoundEnabled());
 
@@ -168,6 +174,16 @@ function toggleAudio() {
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-main);
+  transition: var(--transition-smooth);
+}
+
+.clickable-pill {
+  cursor: pointer;
+}
+
+.clickable-pill:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .dot {

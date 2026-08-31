@@ -8,6 +8,7 @@
       @reset-to-home="resetToHome"
       @open-rules="isRulesOpen = true"
       @open-saved="isSavedOpen = true"
+      @open-edition-drawer="isEditionDrawerOpen = true"
     />
 
     <!-- Main Content Body -->
