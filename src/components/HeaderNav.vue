@@ -12,17 +12,19 @@
 
       <!-- Right: Action Icons -->
       <div class="nav-actions">
-        <!-- Current Active Edition Badge (if in game) -->
-        <div 
+        <!-- Current Active Edition Selector (Editorial Style - No AI Slop Pill) -->
+        <button 
           v-if="isPlaying && activeEdition" 
-          class="edition-pill clickable-pill" 
-          :style="{ backgroundColor: activeEdition.themeColor + '20', borderColor: activeEdition.themeColor }"
+          class="nav-edition-selector font-sans"
           @click="$emit('open-edition-drawer')"
           title="Klik untuk ganti edisi"
         >
-          <span class="dot" :style="{ backgroundColor: activeEdition.themeColor }"></span>
-          <span class="edition-name">{{ activeEdition.title }}</span>
-        </div>
+          <span class="edition-label-prefix">Edisi:</span>
+          <span class="edition-title-text">{{ activeEdition.title }}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="caret-icon">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
 
         <!-- Sound Toggle -->
         <button 
@@ -108,7 +110,7 @@ function toggleAudio() {
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 0.9rem 0;
+  padding: 0.85rem 0;
 }
 
 .nav-content {
@@ -126,15 +128,15 @@ function toggleAudio() {
 }
 
 .brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background-color: var(--text-main);
   color: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -145,14 +147,14 @@ function toggleAudio() {
 }
 
 .brand-name {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.1;
   color: var(--text-main);
 }
 
 .brand-sub {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -161,39 +163,52 @@ function toggleAudio() {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
-.edition-pill {
-  display: flex;
+/* Editorial Style Edition Selector (No Rounded Pill / Dot) */
+.nav-edition-selector {
+  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-full);
-  border: 1px solid;
-  font-size: 0.82rem;
-  font-weight: 600;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-medium);
+  padding: 0.25rem 0.1rem;
+  font-size: 0.85rem;
   color: var(--text-main);
+  cursor: pointer;
   transition: var(--transition-smooth);
 }
 
-.clickable-pill {
-  cursor: pointer;
+.nav-edition-selector:hover {
+  border-bottom-color: var(--text-main);
 }
 
-.clickable-pill:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+.nav-edition-selector:hover .caret-icon {
+  transform: translateY(2px);
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.edition-label-prefix {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.edition-title-text {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.caret-icon {
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
 }
 
 .saved-count {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   background-color: var(--text-main);
   color: var(--bg-main);
@@ -209,7 +224,7 @@ function toggleAudio() {
   .brand-sub {
     display: none;
   }
-  .edition-name {
+  .edition-label-prefix {
     display: none;
   }
 }

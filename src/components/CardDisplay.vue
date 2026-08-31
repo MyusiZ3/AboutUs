@@ -35,14 +35,12 @@
 
           <!-- Bottom Action Hint -->
           <div class="card-front-bottom">
-            <div class="tap-hint-pill" :style="{ backgroundColor: editionData.themeColor + '20', color: '#2D2A26' }">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="17 1 21 5 17 9"></polyline>
-                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-                <polyline points="7 23 3 19 7 15"></polyline>
-                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-              </svg>
+            <div class="tap-hint-text font-sans">
               <span>Ketuk untuk Membuka</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
             </div>
             <span class="card-index-indicator font-sans" v-if="totalCards">
               Kartu {{ currentCardIndex + 1 }} dari {{ totalCards }}
@@ -64,9 +62,10 @@
           <!-- Back Top Bar -->
           <div class="card-back-top">
             <div class="tags-group">
-              <span class="edition-tag font-sans" :style="{ backgroundColor: editionData.themeColor + '25', color: '#2D2A26' }">
+              <span class="edition-tag font-sans">
                 {{ editionData.title }}
               </span>
+              <span class="tag-separator" v-if="card.category">•</span>
               <span class="category-tag font-sans" v-if="card.category">
                 {{ card.category }}
               </span>
@@ -182,18 +181,18 @@ function getLevelText(level) {
 }
 
 .edition-emblem {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .front-deck-badge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -225,18 +224,18 @@ function getLevelText(level) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   z-index: 2;
 }
 
-.tap-hint-pill {
+.tap-hint-text {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
+  gap: 0.4rem;
   font-size: 0.82rem;
   font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
 }
 
 .card-index-indicator {
@@ -245,7 +244,7 @@ function getLevelText(level) {
   font-weight: 600;
 }
 
-/* Card Back Styles */
+/* Card Back Styles - Clean Editorial Tags */
 .card-back-top {
   display: flex;
   align-items: center;
@@ -261,36 +260,37 @@ function getLevelText(level) {
 }
 
 .edition-tag {
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
+  color: var(--text-main);
+  border-left: 2px solid var(--text-main);
+  padding-left: 0.4rem;
+}
+
+.tag-separator {
+  font-size: 0.7rem;
+  color: var(--text-light);
 }
 
 .category-tag {
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
   font-size: 0.72rem;
   font-weight: 600;
-  background: var(--bg-main);
   color: var(--text-muted);
-  border: 1px solid var(--border-light);
 }
 
 .level-indicator {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg-main);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.level-1 { color: #5B8C5A; background: #EEF6ED; }
-.level-2 { color: #B88049; background: #FFF7EC; }
-.level-3 { color: #8A4F7D; background: #FAF0F7; }
+.level-1 { color: #4A7A49; }
+.level-2 { color: #A66E38; }
+.level-3 { color: #7A3F6D; }
 
 .card-back-center {
   z-index: 2;

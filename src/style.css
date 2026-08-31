@@ -245,20 +245,16 @@ body {
   pointer-events: none;
 }
 
-/* Soft Pill Badges - Minimal & Clean */
+/* Editorial Kicker & Tags - No AI Slop Rounded Pills */
 .badge-clean {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.9rem;
-  border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  background-color: var(--bg-accent-soft);
   color: var(--text-muted);
-  border: 1px solid var(--border-light);
+  border-left: 2px solid var(--text-main);
+  padding-left: 0.6rem;
 }
 
 /* Custom Scrollbar */
