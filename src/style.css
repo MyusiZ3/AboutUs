@@ -177,14 +177,15 @@ body {
 .card-perspective-container {
   perspective: 1200px;
   width: 100%;
-  max-width: 420px;
-  height: 480px;
+  max-width: 400px;
+  height: 460px;
   margin: 0 auto;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 900px) {
   .card-perspective-container {
-    height: 420px;
+    max-width: 360px;
+    height: 440px;
   }
 }
 
