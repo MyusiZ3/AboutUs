@@ -1,0 +1,314 @@
+/* Soft Pastel Editorial Design System - Tentang Kita */
+:root {
+  --bg-main: #FAF7F2;
+  --bg-surface: #FFFFFF;
+  --bg-card: #FAF6F0;
+  --bg-accent-soft: #F3ECE1;
+  
+  --text-main: #2D2A26;
+  --text-muted: #6B655E;
+  --text-light: #948C83;
+
+  /* Edition Soft Pastel Accents */
+  --pastel-rose: #E8AEB7;
+  --pastel-rose-dark: #C97B87;
+  --pastel-rose-bg: #FFF5F6;
+
+  --pastel-sage: #CCD5AE;
+  --pastel-sage-dark: #8F9E73;
+  --pastel-sage-bg: #F8FAF2;
+
+  --pastel-terracotta: #D4A373;
+  --pastel-terracotta-dark: #AB7543;
+  --pastel-terracotta-bg: #FFFDF9;
+
+  --pastel-lavender: #C2C7E5;
+  --pastel-lavender-dark: #8188B6;
+  --pastel-lavender-bg: #F9F8FC;
+
+  --pastel-warm: #D6CCC2;
+  --pastel-warm-dark: #9E9184;
+  --pastel-warm-bg: #FAF8F5;
+
+  /* Global UI Elements */
+  --border-light: rgba(45, 42, 38, 0.08);
+  --border-medium: rgba(45, 42, 38, 0.15);
+  --shadow-soft: 0 10px 30px -10px rgba(70, 60, 50, 0.08);
+  --shadow-card: 0 20px 40px -15px rgba(60, 50, 40, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  --shadow-elevated: 0 25px 50px -12px rgba(45, 42, 38, 0.18);
+
+  --font-editorial: 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --transition-smooth: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography Helpers */
+.font-editorial {
+  font-family: var(--font-editorial);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Container */
+.container-narrow {
+  width: 100%;
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Buttons - Minimalist Soft Pastel */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.6rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--text-main);
+  color: var(--bg-main);
+  box-shadow: 0 4px 14px rgba(45, 42, 38, 0.15);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(45, 42, 38, 0.25);
+  background-color: #1A1816;
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-accent-soft);
+  border-color: var(--text-main);
+  transform: translateY(-1px);
+}
+
+.btn-pastel-rose {
+  background-color: var(--pastel-rose);
+  color: #3D2227;
+}
+.btn-pastel-rose:hover {
+  background-color: var(--pastel-rose-dark);
+  color: #FFFFFF;
+}
+
+.btn-pastel-sage {
+  background-color: var(--pastel-sage);
+  color: #263319;
+}
+.btn-pastel-sage:hover {
+  background-color: var(--pastel-sage-dark);
+  color: #FFFFFF;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost:hover {
+  color: var(--text-main);
+  background: rgba(45, 42, 38, 0.05);
+}
+
+.btn-icon-only {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Card 3D Flip Styles */
+.card-perspective-container {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 420px;
+  height: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  .card-perspective-container {
+    height: 420px;
+  }
+}
+
+.card-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.card-3d.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(45, 42, 38, 0.1);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+.card-face-front {
+  background-size: cover;
+  background-position: center;
+}
+
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Tactile Paper Texture Pattern */
+.card-texture-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.card-inner-border {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(45, 42, 38, 0.1);
+  border-radius: calc(var(--radius-lg) - 8px);
+  pointer-events: none;
+}
+
+/* Soft Pill Badges - Minimal & Clean */
+.badge-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: var(--bg-accent-soft);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: #D6CCC2;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B5A89B;
+}
+
+/* Modal Backdrops */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(30, 26, 22, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-card {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--border-medium);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
