@@ -245,17 +245,7 @@ body {
   pointer-events: none;
 }
 
-/* Editorial Kicker & Tags - No AI Slop Rounded Pills */
-.badge-clean {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  border-left: 2px solid var(--text-main);
-  padding-left: 0.6rem;
-}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

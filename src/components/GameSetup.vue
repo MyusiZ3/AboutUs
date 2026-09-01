@@ -1,7 +1,6 @@
 <template>
   <div class="setup-wrapper container-narrow">
     <div class="setup-header">
-      <span class="badge-clean">Permainan Percakapan</span>
       <h1 class="setup-title font-editorial">Bicara Jujur, Mengenal Lebih Dalam</h1>
       <p class="setup-desc">
         Ruang diskusi hangat tanpa penghakiman. Tentukan jumlah pemain, pilih edisi pertanyaan, dan nikmati momen perbincangan yang berkesan.

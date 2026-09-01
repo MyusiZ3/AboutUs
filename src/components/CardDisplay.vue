@@ -265,8 +265,6 @@ function getLevelText(level) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-main);
-  border-left: 2px solid var(--text-main);
-  padding-left: 0.4rem;
 }
 
 .tag-separator {

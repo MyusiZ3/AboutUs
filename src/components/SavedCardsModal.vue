@@ -3,7 +3,6 @@
     <div class="modal-card modal-wide">
       <div class="modal-header">
         <div>
-          <span class="badge-clean">Koleksi Refleksi</span>
           <h2 class="modal-title font-editorial">Kartu Pertanyaan Tersimpan</h2>
           <p class="modal-sub">Pertanyaan yang kamu tandai untuk diskusi lebih lanjut atau refleksi pribadi.</p>
         </div>

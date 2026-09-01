@@ -2,7 +2,6 @@
   <div v-if="isOpen" class="modal-backdrop" @click.self="$emit('close')">
     <div class="modal-card modal-summary">
       <div class="summary-header">
-        <span class="badge-clean">Sesi Selesai</span>
         <h2 class="summary-title font-editorial">Terima Kasih Atas Percakapan yang Hangat</h2>
         <p class="summary-sub">
           Setiap jawaban dan kisah yang terbagi hari ini mendekatkan hubungan kalian satu sama lain.

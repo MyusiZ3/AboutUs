@@ -3,7 +3,6 @@
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <span class="badge-clean">Panduan Bermain</span>
           <h2 class="modal-title font-editorial">Cara Bermain Tentang Kita</h2>
         </div>
         <button class="btn btn-ghost btn-icon-only" @click="$emit('close')">✕</button>
