@@ -124,7 +124,7 @@
     <!-- Footer -->
     <footer class="app-footer">
       <div class="container-wide footer-content font-sans">
-        <p class="footer-copy">Tentang Kita &copy; 2026. Permainan Kartu Percakapan & Deep Talk.</p>
+        <p class="footer-copy">&copy; Arch | Tentang Kita, 2026</p>
       </div>
     </footer>
 
