@@ -177,15 +177,22 @@ body {
 .card-perspective-container {
   perspective: 1200px;
   width: 100%;
-  max-width: 440px;
-  height: 480px;
+  max-width: 340px;
+  height: 475px;
   margin: 0 auto;
 }
 
 @media (max-width: 900px) {
   .card-perspective-container {
-    max-width: 360px;
-    height: 440px;
+    max-width: 310px;
+    height: 435px;
+  }
+}
+
+@media (max-width: 380px) {
+  .card-perspective-container {
+    max-width: 290px;
+    height: 410px;
   }
 }
 
@@ -208,7 +215,7 @@ body {
   height: 100%;
   backface-visibility: hidden;
   border-radius: var(--radius-lg);
-  padding: 2.25rem 2rem;
+  padding: 2rem 1.6rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

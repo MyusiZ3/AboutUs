@@ -1,5 +1,28 @@
 <template>
   <div id="app-root">
+    <!-- Background Editorial Botanical Accents -->
+    <div class="bg-accent-decor bg-decor-left" aria-hidden="true">
+      <svg viewBox="0 0 200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40 380 C 60 300, 110 220, 70 140 C 50 100, 30 60, 10 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M70 140 C 105 115, 135 125, 140 150 C 115 170, 85 160, 70 140 Z" fill="currentColor"/>
+        <path d="M85 190 C 125 175, 150 190, 155 215 C 125 230, 95 215, 85 190 Z" fill="currentColor"/>
+        <path d="M58 250 C 25 235, 10 250, 15 275 C 40 280, 60 265, 58 250 Z" fill="currentColor"/>
+        <path d="M35 80 C 65 60, 85 70, 88 90 C 68 105, 48 95, 35 80 Z" fill="currentColor"/>
+        <circle cx="10" cy="20" r="6" fill="currentColor"/>
+      </svg>
+    </div>
+
+    <div class="bg-accent-decor bg-decor-right" aria-hidden="true">
+      <svg viewBox="0 0 200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 380 C 140 300, 90 220, 130 140 C 150 100, 170 60, 190 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M130 140 C 95 115, 65 125, 60 150 C 85 170, 115 160, 130 140 Z" fill="currentColor"/>
+        <path d="M115 190 C 75 175, 50 190, 45 215 C 75 230, 105 215, 115 190 Z" fill="currentColor"/>
+        <path d="M142 250 C 175 235, 190 250, 185 275 C 160 280, 140 265, 142 250 Z" fill="currentColor"/>
+        <path d="M165 80 C 135 60, 115 70, 112 90 C 132 105, 152 95, 165 80 Z" fill="currentColor"/>
+        <circle cx="190" cy="20" r="6" fill="currentColor"/>
+      </svg>
+    </div>
+
     <!-- Header -->
     <HeaderNav 
       :isPlaying="isPlaying"
@@ -19,6 +42,20 @@
 
       <!-- GAMEPLAY VIEW (Zero-Scroll Dual Panel Layout) -->
       <div v-else class="gameplay-viewport container-wide">
+        <!-- Compact Top Turn Bar for Mobile Only -->
+        <div class="mobile-turn-bar font-sans">
+          <div class="mobile-turn-row">
+            <span class="mobile-turn-label font-sans">Giliran Berbicara</span>
+            <span class="mobile-turn-player font-editorial">{{ players[currentPlayerIndex] }}</span>
+          </div>
+          <div class="mobile-progress-bar-wrap">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
+            </div>
+            <span class="mobile-progress-text">{{ history.length }} / {{ deck.length }} Terjawab</span>
+          </div>
+        </div>
+
         <div class="gameplay-split-grid">
           
           <!-- LEFT COLUMN: 3D Interactive Question Card -->
@@ -38,8 +75,8 @@
           <!-- RIGHT COLUMN: Unified Control & Turn Dashboard -->
           <div class="gameplay-right-col">
             <div class="dashboard-panel control-dashboard">
-              <!-- Top: Turn & Players Status -->
-              <div class="dashboard-top">
+              <!-- Top: Turn & Players Status (Desktop Only) -->
+              <div class="dashboard-top desktop-turn-info">
                 <div class="panel-header">
                   <span class="panel-subtitle font-sans">Giliran Berbicara</span>
                   <h2 class="panel-player-name font-editorial">{{ players[currentPlayerIndex] }}</h2>
@@ -59,8 +96,8 @@
                 </div>
               </div>
 
-              <!-- Middle: Deck Progress Bar -->
-              <div class="progress-box font-sans">
+              <!-- Middle: Deck Progress Bar (Desktop Only) -->
+              <div class="progress-box font-sans desktop-turn-info">
                 <div class="progress-bar-bg">
                   <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
                 </div>
@@ -341,20 +378,22 @@ function shuffleArray(arr) {
 .gameplay-viewport {
   flex-grow: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 1.5rem 0;
   min-height: calc(100vh - 120px);
+  width: 100%;
 }
 
 .gameplay-split-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 3rem;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 1040px;
+  max-width: 860px;
   margin: 0 auto;
 }
 
@@ -377,12 +416,13 @@ function shuffleArray(arr) {
   background-color: var(--bg-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-medium);
-  padding: 2.25rem 2rem;
+  padding: 1.6rem 1.6rem;
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  height: 480px;
+  gap: 0.95rem;
+  min-height: 480px;
+  height: auto;
   justify-content: space-between;
   box-sizing: border-box;
 }
@@ -486,17 +526,16 @@ function shuffleArray(arr) {
   background-color: var(--border-light);
 }
 
-/* Actions Panel */
 .dashboard-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.65rem;
 }
 
 .btn-next-turn-large {
   width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.02rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.98rem;
   box-shadow: 0 8px 24px -6px rgba(45, 42, 38, 0.25);
 }
 
@@ -527,24 +566,170 @@ function shuffleArray(arr) {
   color: var(--text-muted);
 }
 
-/* Mobile Responsiveness */
+/* Mobile Turn Bar */
+.mobile-turn-bar {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 310px;
+  margin: 0 auto 0.75rem auto;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  box-sizing: border-box;
+}
+
+.mobile-turn-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.mobile-turn-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.mobile-turn-player {
+  font-size: 1.15rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.mobile-progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-progress-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Background Editorial Botanical Accents */
+.bg-accent-decor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--text-main);
+  opacity: 0.065;
+  transition: opacity 0.5s ease;
+}
+
+.bg-decor-left {
+  top: 15%;
+  left: -25px;
+  width: 220px;
+  height: 440px;
+  transform: rotate(-10deg);
+}
+
+.bg-decor-right {
+  bottom: 8%;
+  right: -25px;
+  width: 240px;
+  height: 480px;
+  transform: rotate(8deg);
+}
+
+@media (max-width: 1200px) {
+  .bg-accent-decor {
+    opacity: 0.045;
+  }
+}
+
 @media (max-width: 900px) {
+  .bg-accent-decor {
+    display: none;
+  }
+
+  .mobile-turn-bar {
+    display: flex;
+    width: 100%;
+    max-width: 320px;
+    box-sizing: border-box;
+  }
+
+  .desktop-turn-info {
+    display: none !important;
+  }
+
+  .dashboard-divider {
+    display: none !important;
+  }
+
   .gameplay-viewport {
-    height: auto;
-    padding: 2rem 0;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0.5rem 0 1.5rem 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   .gameplay-split-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 0.75rem !important;
+    grid-template-columns: none !important;
+  }
+
+  .gameplay-left-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   .gameplay-right-col {
-    max-width: 440px;
+    width: 100% !important;
+    max-width: 310px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 
   .control-dashboard {
-    height: auto;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    gap: 0.65rem !important;
+  }
+
+  .btn-next-turn-large {
+    width: 100% !important;
+    padding: 0.85rem 1.25rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  .quick-action-grid {
+    width: 100% !important;
+    gap: 0.45rem !important;
+  }
+
+  .quick-action-grid .btn {
+    padding: 0.55rem 0.5rem !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    gap: 0.35rem !important;
   }
 }
 </style>
