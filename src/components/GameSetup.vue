@@ -1,5 +1,5 @@
 <template>
-  <div class="setup-wrapper container-narrow">
+  <div class="setup-wrapper container-wide">
     <div class="setup-header">
       <h1 class="setup-title font-editorial">Bicara Jujur, Mengenal Lebih Dalam</h1>
       <p class="setup-desc">
@@ -202,7 +202,7 @@ function handleStart() {
 }
 
 .setup-title {
-  font-size: 2.3rem;
+  font-size: 2.5rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   color: var(--text-main);
@@ -210,9 +210,9 @@ function handleStart() {
 }
 
 .setup-desc {
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--text-muted);
-  max-width: 600px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
@@ -220,14 +220,14 @@ function handleStart() {
   background-color: var(--bg-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-medium);
-  padding: 2.25rem;
+  padding: 2.5rem 2.75rem;
   box-shadow: var(--shadow-soft);
 }
 
 .setup-section {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.2rem;
 }
 
 .section-label-group {
@@ -244,7 +244,7 @@ function handleStart() {
 }
 
 .section-title {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-main);
 }
@@ -252,7 +252,7 @@ function handleStart() {
 .section-divider {
   height: 1px;
   background-color: var(--border-light);
-  margin: 1.75rem 0;
+  margin: 2rem 0;
 }
 
 /* Player Count */
@@ -271,13 +271,13 @@ function handleStart() {
 }
 
 .count-btn {
-  padding: 0.55rem 1.1rem;
+  padding: 0.6rem 1.25rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-medium);
   background: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-smooth);
@@ -295,8 +295,8 @@ function handleStart() {
 
 .player-names-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   margin-top: 0.35rem;
 }
 
@@ -312,7 +312,7 @@ function handleStart() {
 
 .name-input {
   width: 100%;
-  padding: 0.65rem 0.9rem;
+  padding: 0.7rem 0.95rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-medium);
   background: var(--bg-main);
@@ -329,24 +329,25 @@ function handleStart() {
   box-shadow: 0 0 0 3px rgba(45, 42, 38, 0.08);
 }
 
-/* Editions Grid */
+/* Editions Grid - Balanced 3 Columns on Desktop */
 .editions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
 }
 
 .edition-card {
   border-radius: var(--radius-md);
   border: 1.5px solid var(--border-light);
   background-color: var(--card-bg, var(--bg-main));
-  padding: 1.1rem;
+  padding: 1.25rem;
   cursor: pointer;
   transition: var(--transition-smooth);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 130px;
 }
 
 .edition-card:hover {
@@ -394,30 +395,30 @@ function handleStart() {
 }
 
 .edition-card-title {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--text-main);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
   line-height: 1.2;
 }
 
 .edition-card-desc {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
-/* Level Options */
+/* Level Options - 2 Columns on Desktop */
 .level-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
 
 .level-card {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.85rem;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   background: var(--bg-main);
@@ -436,8 +437,8 @@ function handleStart() {
 }
 
 .level-radio {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid var(--border-medium);
   margin-top: 2px;
@@ -452,46 +453,68 @@ function handleStart() {
 }
 
 .radio-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--text-main);
 }
 
 .level-title {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.2rem;
 }
 
 .level-desc {
   display: block;
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .setup-actions {
-  margin-top: 2rem;
+  margin-top: 2.25rem;
   display: flex;
   justify-content: center;
 }
 
 .btn-start {
   width: 100%;
-  max-width: 320px;
-  padding: 0.95rem 1.8rem;
-  font-size: 1rem;
+  max-width: 340px;
+  padding: 1.05rem 2rem;
+  font-size: 1.05rem;
 }
 
-@media (max-width: 640px) {
+/* Responsive Media Queries */
+@media (max-width: 920px) {
   .setup-card {
-    padding: 1.5rem;
+    padding: 1.75rem;
+  }
+  .editions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .player-names-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .level-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .setup-card {
+    padding: 1.25rem;
   }
   .setup-title {
     font-size: 1.85rem;
+  }
+  .editions-grid {
+    grid-template-columns: 1fr;
+  }
+  .player-names-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
