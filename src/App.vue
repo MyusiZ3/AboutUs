@@ -45,14 +45,14 @@
         <!-- Compact Top Turn Bar for Mobile Only -->
         <div class="mobile-turn-bar font-sans">
           <div class="mobile-turn-row">
-            <span class="mobile-turn-label font-sans">Giliran Berbicara</span>
+            <span class="mobile-turn-label font-sans">{{ t('turnLabel') }}</span>
             <span class="mobile-turn-player font-editorial">{{ players[currentPlayerIndex] }}</span>
           </div>
           <div class="mobile-progress-bar-wrap">
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
             </div>
-            <span class="mobile-progress-text">{{ history.length }} / {{ deck.length }} Terjawab</span>
+            <span class="mobile-progress-text">{{ history.length }} / {{ deck.length }} {{ t('cardsAnswered') }}</span>
           </div>
         </div>
 
@@ -78,7 +78,7 @@
               <!-- Top: Turn & Players Status (Desktop Only) -->
               <div class="dashboard-top desktop-turn-info">
                 <div class="panel-header">
-                  <span class="panel-subtitle font-sans">Giliran Berbicara</span>
+                  <span class="panel-subtitle font-sans">{{ t('turnLabel') }}</span>
                   <h2 class="panel-player-name font-editorial">{{ players[currentPlayerIndex] }}</h2>
                 </div>
 
@@ -101,7 +101,7 @@
                 <div class="progress-bar-bg">
                   <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
                 </div>
-                <span class="progress-label">{{ history.length }} / {{ deck.length }} Terjawab</span>
+                <span class="progress-label">{{ history.length }} / {{ deck.length }} {{ t('cardsAnswered') }}</span>
               </div>
 
               <div class="dashboard-divider"></div>
@@ -112,19 +112,19 @@
                   class="btn btn-primary btn-next-turn-large"
                   @click="nextTurn"
                 >
-                  <span>Lanjut Giliran Pemain</span>
+                  <span>{{ t('nextTurn') }}</span>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </button>
 
-                <div class="quick-action-grid">
+                <div class="quick-action-grid font-sans">
                   <button class="btn btn-secondary" @click="skipCard" title="Tarik kartu lain tanpa ganti giliran">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="13 17 18 12 13 7"></polyline>
                       <polyline points="6 17 11 12 6 7"></polyline>
                     </svg>
-                    <span>Ganti Kartu</span>
+                    <span>{{ t('changeCard') }}</span>
                   </button>
 
                   <button class="btn btn-secondary" @click="isEditionDrawerOpen = true">
@@ -134,14 +134,14 @@
                       <rect x="14" y="14" width="7" height="7"></rect>
                       <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
-                    <span>Ganti Edisi</span>
+                    <span>{{ t('changeEdition') }}</span>
                   </button>
 
                   <button class="btn btn-secondary" @click="isSavedOpen = true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
-                    <span>Tersimpan ({{ savedCards.length }})</span>
+                    <span>{{ t('savedCount') }} ({{ savedCards.length }})</span>
                   </button>
 
                   <button class="btn btn-ghost btn-finish-session" @click="isSummaryOpen = true">
@@ -149,7 +149,7 @@
                       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                       <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    <span>Selesai Sesi</span>
+                    <span>{{ t('finishSession') }}</span>
                   </button>
                 </div>
               </div>
@@ -164,7 +164,7 @@
     <!-- Footer -->
     <footer class="app-footer">
       <div class="container-wide footer-content font-sans">
-        <p class="footer-copy">&copy; Arch | Tentang Kita, 2026</p>
+        <p class="footer-copy">{{ t('copyright') }}</p>
       </div>
     </footer>
 
@@ -185,14 +185,15 @@
       :isOpen="isSummaryOpen"
       :players="players"
       :history="history"
-      :savedCardsCount="savedCards.length"
+      :savedCount="savedCards.length"
       @close="isSummaryOpen = false"
-      @reset-game="resetToHome"
+      @continue-playing="isSummaryOpen = false"
+      @new-game="resetToHome"
     />
 
     <EditionDrawer
       :isOpen="isEditionDrawerOpen"
-      :currentEdition="selectedEdition"
+      :currentEditionId="selectedEdition"
       @close="isEditionDrawerOpen = false"
       @change-edition="handleChangeEdition"
     />
@@ -209,8 +210,9 @@ import SavedCardsModal from './components/SavedCardsModal.vue';
 import SessionSummaryModal from './components/SessionSummaryModal.vue';
 import EditionDrawer from './components/EditionDrawer.vue';
 
-import { QUESTIONS, EDITIONS } from './data/questions.js';
+import { QUESTIONS } from './data/questions.js';
 import { playCardFlipSound, playButtonClickSound } from './utils/audio.js';
+import { t } from './utils/i18n.js';
 
 function getFilteredQuestions(editionId, levelFilter) {
   let list = QUESTIONS;
@@ -248,30 +250,27 @@ const currentCard = computed(() => {
 });
 
 const progressPercent = computed(() => {
-  if (deck.value.length === 0) return 0;
+  if (!deck.value.length) return 0;
   return Math.round((history.value.length / deck.value.length) * 100);
 });
 
-onMounted(() => {
-  // Load saved cards from localStorage if available
-  const stored = localStorage.getItem('tentang_kita_saved_cards');
-  if (stored) {
-    try {
-      savedCards.value = JSON.parse(stored);
-    } catch (e) {
-      savedCards.value = [];
-    }
+// Fisher-Yates shuffle helper
+function shuffleArray(arr) {
+  const newArr = [...arr];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
   }
-});
+  return newArr;
+}
 
 function handleStartGame(setupData) {
-  players.value = setupData.players;
+  players.value = setupData.playerNames;
   selectedEdition.value = setupData.editionId;
-  selectedLevel.value = setupData.levelFilter;
-  
-  // Build and shuffle deck
-  let filtered = getFilteredQuestions(selectedEdition.value, selectedLevel.value);
-  deck.value = shuffleArray([...filtered]);
+  selectedLevel.value = setupData.level;
+
+  const rawDeck = getFilteredQuestions(selectedEdition.value, selectedLevel.value);
+  deck.value = shuffleArray(rawDeck);
   
   currentCardIndex.value = 0;
   currentPlayerIndex.value = 0;
@@ -281,82 +280,69 @@ function handleStartGame(setupData) {
 }
 
 function nextTurn() {
-  playCardFlipSound();
-  
-  // Record history
-  if (currentCard.value && !history.value.find(h => h.id === currentCard.value.id)) {
-    history.value.push(currentCard.value);
+  playButtonClickSound();
+
+  // Record current card to history if not recorded yet
+  if (currentCard.value) {
+    const alreadyRecorded = history.value.some(h => h.card.id === currentCard.value.id);
+    if (!alreadyRecorded) {
+      history.value.push({
+        player: players.value[currentPlayerIndex.value],
+        card: currentCard.value
+      });
+    }
   }
 
-  // Advance player turn
+  // Advance player index
   currentPlayerIndex.value = (currentPlayerIndex.value + 1) % players.value.length;
-  
+
   // Advance card index
   if (currentCardIndex.value < deck.value.length - 1) {
     currentCardIndex.value++;
+    isFlipped.value = false;
   } else {
-    // Re-shuffle deck if finished
-    deck.value = shuffleArray([...deck.value]);
-    currentCardIndex.value = 0;
+    // Reached end of deck -> show summary
+    isSummaryOpen.value = true;
   }
-  
-  isFlipped.value = false;
 }
 
 function skipCard() {
   playButtonClickSound();
   if (currentCardIndex.value < deck.value.length - 1) {
     currentCardIndex.value++;
-  } else {
-    deck.value = shuffleArray([...deck.value]);
-    currentCardIndex.value = 0;
+    isFlipped.value = false;
   }
-  isFlipped.value = false;
 }
 
-function handleChangeEdition(editionId) {
-  selectedEdition.value = editionId;
-  let filtered = getFilteredQuestions(editionId, selectedLevel.value);
-  deck.value = shuffleArray([...filtered]);
+function handleChangeEdition(newEditionId) {
+  selectedEdition.value = newEditionId;
+  const rawDeck = getFilteredQuestions(newEditionId, selectedLevel.value);
+  deck.value = shuffleArray(rawDeck);
   currentCardIndex.value = 0;
   isFlipped.value = false;
-  isEditionDrawerOpen.value = false;
-}
-
-function toggleSaveCard() {
-  playButtonClickSound();
-  if (!currentCard.value) return;
-  const idx = savedCards.value.findIndex(c => c.id === currentCard.value.id);
-  if (idx >= 0) {
-    savedCards.value.splice(idx, 1);
-  } else {
-    savedCards.value.push(currentCard.value);
-  }
-  localStorage.setItem('tentang_kita_saved_cards', JSON.stringify(savedCards.value));
-}
-
-function removeSavedCard(cardId) {
-  playButtonClickSound();
-  savedCards.value = savedCards.value.filter(c => c.id !== cardId);
-  localStorage.setItem('tentang_kita_saved_cards', JSON.stringify(savedCards.value));
 }
 
 function isCardSaved(cardId) {
   return savedCards.value.some(c => c.id === cardId);
 }
 
+function toggleSaveCard(card) {
+  const index = savedCards.value.findIndex(c => c.id === card.id);
+  if (index >= 0) {
+    savedCards.value.splice(index, 1);
+  } else {
+    savedCards.value.push(card);
+  }
+}
+
+function removeSavedCard(cardId) {
+  savedCards.value = savedCards.value.filter(c => c.id !== cardId);
+}
+
 function resetToHome() {
   playButtonClickSound();
   isPlaying.value = false;
-}
-
-// Utility Fisher-Yates shuffle
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+  isSummaryOpen.value = false;
 }
 </script>
 
@@ -365,239 +351,74 @@ function shuffleArray(arr) {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  background-color: var(--bg-main);
+  overflow-x: hidden;
+}
+
+.bg-accent-decor {
+  position: fixed;
+  top: 10%;
+  width: 220px;
+  height: 440px;
+  pointer-events: none;
+  z-index: 0;
+  color: #D4A373;
+  opacity: 0.18;
+}
+
+.bg-decor-left {
+  left: 0;
+}
+
+.bg-decor-right {
+  right: 0;
 }
 
 .app-main {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 
-/* Gameplay Viewport Split Layout */
 .gameplay-viewport {
-  flex-grow: 1;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 1.5rem 0;
-  min-height: calc(100vh - 120px);
-  width: 100%;
 }
 
-.gameplay-split-grid {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 3rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
-}
-
-.gameplay-left-col {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.gameplay-right-col {
-  width: 100%;
-  max-width: 440px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Single Control Dashboard Panel */
-.control-dashboard {
-  background-color: var(--bg-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-medium);
-  padding: 1.6rem 1.6rem;
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  flex-direction: column;
-  gap: 0.95rem;
-  min-height: 480px;
-  height: auto;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.dashboard-top {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.panel-header {
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 0.65rem;
-}
-
-.panel-subtitle {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  font-weight: 700;
-  display: block;
-  margin-bottom: 0.2rem;
-}
-
-.panel-player-name {
-  font-size: 2.2rem;
-  color: var(--text-main);
-  line-height: 1.1;
-}
-
-/* Players chips list */
-.players-chips-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.player-chip-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
-  border-radius: var(--radius-full);
-  font-size: 0.82rem;
-  font-weight: 600;
-  background: var(--bg-main);
-  color: var(--text-muted);
-  border: 1px solid var(--border-light);
-  transition: var(--transition-smooth);
-}
-
-.player-chip-item.active {
-  background: var(--text-main);
-  color: var(--bg-main);
-  border-color: var(--text-main);
-}
-
-.chip-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-/* Progress Box */
-.progress-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  background: var(--bg-main);
-  padding: 0.65rem 1rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
-}
-
-.progress-bar-bg {
-  flex-grow: 1;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--bg-accent-soft);
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: var(--text-main);
-  transition: width 0.35s ease;
-}
-
-.progress-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.dashboard-divider {
-  height: 1px;
-  background-color: var(--border-light);
-}
-
-.dashboard-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.btn-next-turn-large {
-  width: 100%;
-  padding: 0.85rem 1.25rem;
-  font-size: 0.98rem;
-  box-shadow: 0 8px 24px -6px rgba(45, 42, 38, 0.25);
-}
-
-.quick-action-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.65rem;
-}
-
-.btn-finish-session {
-  grid-column: span 2;
-}
-
-/* Footer Styling */
-.app-footer {
-  border-top: 1px solid var(--border-light);
-  padding: 0.75rem 0;
-  background: rgba(250, 247, 242, 0.6);
-  margin-top: auto;
-}
-
-.footer-content {
-  text-align: center;
-}
-
-.footer-copy {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-/* Mobile Turn Bar */
 .mobile-turn-bar {
   display: none;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  max-width: 310px;
-  margin: 0 auto 0.75rem auto;
-  padding: 0.75rem 1rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-soft);
-  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .mobile-turn-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  margin-bottom: 0.6rem;
 }
 
 .mobile-turn-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 0.75rem;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
   font-weight: 700;
-  letter-spacing: 0.06em;
 }
 
 .mobile-turn-player {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: var(--text-main);
   font-weight: 600;
 }
@@ -609,127 +430,200 @@ function shuffleArray(arr) {
 }
 
 .mobile-progress-text {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.75rem;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
-/* Background Editorial Botanical Accents */
-.bg-accent-decor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
+.gameplay-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.gameplay-left-col {
+  display: flex;
+  justify-content: center;
+}
+
+.gameplay-right-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+
+.dashboard-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  margin-bottom: 1.25rem;
+}
+
+.panel-subtitle {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.panel-player-name {
+  font-size: 2.2rem;
   color: var(--text-main);
-  opacity: 0.065;
-  transition: opacity 0.5s ease;
+  line-height: 1.15;
 }
 
-.bg-decor-left {
-  top: 15%;
-  left: -25px;
-  width: 220px;
-  height: 440px;
-  transform: rotate(-10deg);
+.players-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.bg-decor-right {
-  bottom: 8%;
-  right: -25px;
-  width: 240px;
-  height: 480px;
-  transform: rotate(8deg);
+.player-chip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition: var(--transition-smooth);
 }
 
-@media (max-width: 1200px) {
-  .bg-accent-decor {
-    opacity: 0.045;
-  }
+.player-chip-item.active {
+  background: var(--text-main);
+  color: var(--bg-surface);
+  border-color: var(--text-main);
+  font-weight: 600;
 }
 
-@media (max-width: 900px) {
-  .bg-accent-decor {
-    display: none;
+.chip-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-light);
+}
+
+.player-chip-item.active .chip-status-dot {
+  background: #D4A373;
+}
+
+.progress-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-bar-bg {
+  height: 6px;
+  width: 100%;
+  background: var(--bg-main);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--text-main);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.dashboard-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 1.5rem 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.btn-next-turn-large {
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  font-size: 1rem;
+  justify-content: center;
+  border-radius: var(--radius-full);
+}
+
+.quick-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.quick-action-grid button {
+  font-size: 0.82rem;
+  padding: 0.65rem 0.75rem;
+  white-space: nowrap;
+}
+
+.btn-finish-session {
+  color: #C85A5A;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border-light);
+  padding: 1.25rem 0;
+  margin-top: auto;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+@media (max-width: 860px) {
+  .gameplay-split-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .mobile-turn-bar {
-    display: flex;
-    width: 100%;
-    max-width: 320px;
-    box-sizing: border-box;
+    display: block;
   }
 
   .desktop-turn-info {
-    display: none !important;
+    display: none;
+  }
+
+  .dashboard-panel {
+    padding: 1.25rem;
   }
 
   .dashboard-divider {
-    display: none !important;
-  }
-
-  .gameplay-viewport {
-    height: auto !important;
-    min-height: auto !important;
-    padding: 0.5rem 0 1.5rem 0 !important;
-    width: 100% !important;
-    overflow-x: hidden !important;
-  }
-
-  .gameplay-split-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    gap: 0.75rem !important;
-    grid-template-columns: none !important;
-  }
-
-  .gameplay-left-col {
-    width: 100% !important;
-    max-width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-
-  .gameplay-right-col {
-    width: 100% !important;
-    max-width: 310px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-
-  .control-dashboard {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: auto !important;
-    height: auto !important;
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    gap: 0.65rem !important;
-  }
-
-  .btn-next-turn-large {
-    width: 100% !important;
-    padding: 0.85rem 1.25rem !important;
-    font-size: 0.95rem !important;
-  }
-
-  .quick-action-grid {
-    width: 100% !important;
-    gap: 0.45rem !important;
-  }
-
-  .quick-action-grid .btn {
-    padding: 0.55rem 0.5rem !important;
-    font-size: 0.78rem !important;
-    white-space: nowrap !important;
-    gap: 0.35rem !important;
+    margin: 0.5rem 0 1rem 0;
   }
 }
 </style>

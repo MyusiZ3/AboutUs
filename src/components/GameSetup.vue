@@ -1,9 +1,9 @@
 <template>
   <div class="setup-wrapper container-wide">
     <div class="setup-header">
-      <h1 class="setup-title font-editorial">Bicara Jujur, Mengenal Lebih Dalam</h1>
+      <h1 class="setup-title font-editorial">{{ t('setupTitle') }}</h1>
       <p class="setup-desc">
-        Ruang diskusi hangat tanpa penghakiman. Tentukan jumlah pemain, pilih edisi pertanyaan, dan nikmati momen perbincangan yang berkesan.
+        {{ t('setupDesc') }}
       </p>
     </div>
 
@@ -12,11 +12,11 @@
       <div class="setup-section">
         <div class="section-label-group">
           <span class="section-num">01</span>
-          <h2 class="section-title">Pemain & Giliran</h2>
+          <h2 class="section-title">{{ t('playersTitle') }}</h2>
         </div>
 
         <div class="player-count-picker">
-          <label class="input-label">Jumlah Pemain</label>
+          <label class="input-label">{{ t('playerCountLabel') }}</label>
           <div class="count-buttons">
             <button 
               v-for="count in [2, 3, 4, 5, 6]" 
@@ -25,18 +25,18 @@
               :class="{ active: playerCount === count }"
               @click="setPlayerCount(count)"
             >
-              {{ count }} Orang
+              {{ count }} {{ t('playerSuffix') }}
             </button>
           </div>
         </div>
 
         <div class="player-names-grid">
           <div v-for="(name, idx) in playerNames" :key="idx" class="name-field">
-            <label class="field-label">Pemain {{ idx + 1 }}</label>
+            <label class="field-label">{{ t('playerPrefix') }} {{ idx + 1 }}</label>
             <input 
               type="text" 
               v-model="playerNames[idx]" 
-              :placeholder="`Nama Pemain ${idx + 1}`"
+              :placeholder="`${t('playerPrefix')} ${idx + 1}`"
               class="name-input"
             />
           </div>
@@ -49,7 +49,7 @@
       <div class="setup-section">
         <div class="section-label-group">
           <span class="section-num">02</span>
-          <h2 class="section-title">Pilih Edisi Kartu</h2>
+          <h2 class="section-title">{{ t('editionTitle') }}</h2>
         </div>
 
         <div class="editions-grid">
@@ -60,11 +60,11 @@
             @click="selectEdition('all')"
           >
             <div class="edition-card-header">
-              <span class="edition-count-badge">250 Kartu Total</span>
+              <span class="edition-count-badge">{{ getCardCounts('all').all }} {{ t('cardsUnit') }}</span>
               <span class="check-mark" v-if="selectedEditionId === 'all'">✓</span>
             </div>
-            <h3 class="edition-card-title font-editorial">Campur Semua Edisi</h3>
-            <p class="edition-card-desc">Pertanyaan acak dari edisi Pasangan, Sahabat, Pernikahan, Refleksi, dan Keluarga.</p>
+            <h3 class="edition-card-title font-editorial">{{ t('combinedTitle') }}</h3>
+            <p class="edition-card-desc">{{ t('combinedDesc') }}</p>
           </div>
 
           <!-- Individual Editions -->
@@ -77,11 +77,11 @@
             @click="selectEdition(key)"
           >
             <div class="edition-card-header">
-              <span class="edition-count-badge">50 Kartu</span>
+              <span class="edition-count-badge">{{ getCardCounts(key).all }} {{ t('cardsUnit') }}</span>
               <span class="check-mark" v-if="selectedEditionId === key">✓</span>
             </div>
-            <h3 class="edition-card-title font-editorial">{{ ed.title }}</h3>
-            <p class="edition-card-desc">{{ ed.subtitle }}</p>
+            <h3 class="edition-card-title font-editorial">{{ getLocalizedField(ed.title) }}</h3>
+            <p class="edition-card-desc">{{ getLocalizedField(ed.subtitle) }}</p>
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
       <div class="setup-section">
         <div class="section-label-group">
           <span class="section-num">03</span>
-          <h2 class="section-title">Tingkat Kedalaman Pertanyaan</h2>
+          <h2 class="section-title">{{ t('depthTitle') }}</h2>
         </div>
 
         <div class="level-options">
@@ -117,7 +117,7 @@
       <!-- Action Footer -->
       <div class="setup-actions">
         <button class="btn btn-primary btn-start" @click="handleStart">
-          <span>Mulai Permainan</span>
+          <span>{{ t('startGame') }}</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -132,6 +132,7 @@
 import { ref, computed } from 'vue';
 import { EDITIONS, QUESTIONS } from '../data/questions.js';
 import { playButtonClickSound } from '../utils/audio.js';
+import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
 
 const emit = defineEmits(['start-game']);
 
@@ -156,6 +157,26 @@ function getCardCounts(editionId) {
 
 const computedLevelOptions = computed(() => {
   const counts = getCardCounts(selectedEditionId.value);
+  const lang = currentLang.value;
+
+  if (lang === 'en') {
+    return [
+      { value: 0, label: `All Levels (${counts.all} Cards)`, desc: 'Full range of questions from casual icebreakers to deep reflections' },
+      { value: 1, label: `Level 1: Light & Nostalgic (${counts.lvl1} Cards)`, desc: 'Great for warm icebreakers and fond shared memories' },
+      { value: 2, label: `Level 2: Deep & Perspective (${counts.lvl2} Cards)`, desc: 'Explore life values, personal expectations, and mindsets' },
+      { value: 3, label: `Level 3: Intense & Reflective (${counts.lvl3} Cards)`, desc: 'Honest topics on vulnerability, commitment, and deep trust' }
+    ];
+  }
+
+  if (lang === 'jp') {
+    return [
+      { value: 0, label: `すべてのレベル (全${counts.all}枚)`, desc: '日常会話から深い対話まで完全なバリエーション' },
+      { value: 1, label: `レベル1：ライト＆ノスタルジー (${counts.lvl1}枚)`, desc: '会話のきっかけや楽しい思い出の共有に最適' },
+      { value: 2, label: `レベル2：ディープ＆視点 (${counts.lvl2}枚)`, desc: '人生観、期待、ものの見方について深く語り合う' },
+      { value: 3, label: `レベル3：シリアス＆内省 (${counts.lvl3}枚)`, desc: '弱さの開示、約束、信頼に関する本音のテーマ' }
+    ];
+  }
+
   return [
     { value: 0, label: `Semua Tingkat (${counts.all} Kartu Lengkap)`, desc: 'Variasi lengkap dari pertanyaan santai hingga mendalam' },
     { value: 1, label: `Tingkat 1: Ringan & Nostalgia (${counts.lvl1} Kartu)`, desc: 'Cocok untuk pembuka percakapan dan kenangan manis' },
@@ -167,9 +188,10 @@ const computedLevelOptions = computed(() => {
 function setPlayerCount(count) {
   playButtonClickSound();
   playerCount.value = count;
+  const prefix = t('playerPrefix');
   const newNames = [];
   for (let i = 0; i < count; i++) {
-    newNames.push(playerNames.value[i] || `Pemain ${i + 1}`);
+    newNames.push(playerNames.value[i] || `${prefix} ${i + 1}`);
   }
   playerNames.value = newNames;
 }
@@ -181,11 +203,11 @@ function selectEdition(key) {
 
 function handleStart() {
   playButtonClickSound();
-  const cleanedNames = playerNames.value.map((n, i) => n.trim() || `Pemain ${i + 1}`);
+  const prefix = t('playerPrefix');
   emit('start-game', {
-    players: cleanedNames,
+    playerNames: playerNames.value.map((n, idx) => n.trim() || `${prefix} ${idx + 1}`),
     editionId: selectedEditionId.value,
-    levelFilter: selectedLevel.value
+    level: selectedLevel.value
   });
 }
 </script>
@@ -193,41 +215,40 @@ function handleStart() {
 <style scoped>
 .setup-wrapper {
   padding-top: 2rem;
-  padding-bottom: 3rem;
+  padding-bottom: 4rem;
 }
 
 .setup-header {
   text-align: center;
-  margin-bottom: 2rem;
+  max-width: 620px;
+  margin: 0 auto 2.5rem auto;
 }
 
 .setup-title {
-  font-size: 2.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.3rem;
   color: var(--text-main);
-  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
 }
 
 .setup-desc {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-  max-width: 680px;
-  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .setup-card {
   background-color: var(--bg-surface);
-  border-radius: var(--radius-lg);
   border: 1px solid var(--border-medium);
-  padding: 2.5rem 2.75rem;
-  box-shadow: var(--shadow-soft);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .setup-section {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.25rem;
 }
 
 .section-label-group {
@@ -237,48 +258,44 @@ function handleStart() {
 }
 
 .section-num {
-  font-size: 0.85rem;
+  font-family: monospace;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-light);
-  font-family: monospace;
+  background: var(--bg-main);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
 }
 
 .section-title {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--text-main);
 }
 
-.section-divider {
-  height: 1px;
-  background-color: var(--border-light);
-  margin: 2rem 0;
-}
-
-/* Player Count */
 .input-label {
-  display: block;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
+  display: block;
   margin-bottom: 0.5rem;
 }
 
 .count-buttons {
   display: flex;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  gap: 0.6rem;
 }
 
 .count-btn {
-  padding: 0.6rem 1.25rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-medium);
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
   background: var(--bg-main);
   color: var(--text-main);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition-smooth);
 }
@@ -289,151 +306,141 @@ function handleStart() {
 
 .count-btn.active {
   background: var(--text-main);
-  color: var(--bg-main);
+  color: var(--bg-surface);
   border-color: var(--text-main);
 }
 
 .player-names-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
 }
 
 .field-label {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  margin-bottom: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  display: block;
+  margin-bottom: 0.35rem;
 }
 
 .name-input {
   width: 100%;
-  padding: 0.7rem 0.95rem;
+  padding: 0.65rem 0.85rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-medium);
-  background: var(--bg-main);
-  font-family: var(--font-sans);
+  background: var(--bg-surface);
   font-size: 0.9rem;
   color: var(--text-main);
-  outline: none;
   transition: var(--transition-smooth);
 }
 
 .name-input:focus {
+  outline: none;
   border-color: var(--text-main);
-  background: var(--bg-surface);
-  box-shadow: 0 0 0 3px rgba(45, 42, 38, 0.08);
 }
 
-/* Editions Grid - Balanced 3 Columns on Desktop */
+.section-divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 2.25rem 0;
+}
+
 .editions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
 }
 
 .edition-card {
+  border: 1px solid var(--border-medium);
   border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-light);
-  background-color: var(--card-bg, var(--bg-main));
-  padding: 1.25rem;
+  padding: 1.4rem;
+  background-color: var(--bg-surface);
   cursor: pointer;
   transition: var(--transition-smooth);
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 130px;
 }
 
 .edition-card:hover {
   transform: translateY(-2px);
-  border-color: var(--card-accent, var(--text-main));
+  box-shadow: var(--shadow-sm);
+  border-color: var(--text-main);
 }
 
 .edition-card.active {
-  border-color: var(--card-accent, var(--text-main));
-  box-shadow: 0 6px 18px -4px rgba(0,0,0,0.08);
-  border-width: 2px;
-}
-
-.combined-card {
-  --card-accent: var(--text-main);
-  --card-bg: #F5EBE0;
+  border-color: var(--text-main);
+  background-color: var(--card-bg, #FFFDF9);
+  box-shadow: 0 0 0 1px var(--text-main);
 }
 
 .edition-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.85rem;
 }
 
 .edition-count-badge {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
+  background: rgba(45, 42, 38, 0.05);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
 }
 
 .check-mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: var(--text-main);
-  color: var(--bg-main);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.72rem;
+  color: var(--text-main);
   font-weight: 700;
+  font-size: 1rem;
 }
 
 .edition-card-title {
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   color: var(--text-main);
-  margin-bottom: 0.35rem;
-  line-height: 1.2;
+  margin-bottom: 0.4rem;
 }
 
 .edition-card-desc {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
-/* Level Options - 2 Columns on Desktop */
+.combined-card {
+  background-color: #FAF6F0;
+}
+
 .level-options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .level-card {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
-  padding: 1rem 1.1rem;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-  background: var(--bg-main);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-surface);
   cursor: pointer;
   transition: var(--transition-smooth);
 }
 
 .level-card:hover {
-  border-color: var(--border-medium);
+  border-color: var(--text-main);
 }
 
 .level-card.active {
   border-color: var(--text-main);
-  background: var(--bg-surface);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  background: var(--bg-main);
 }
 
 .level-radio {
@@ -441,7 +448,7 @@ function handleStart() {
   height: 18px;
   border-radius: 50%;
   border: 2px solid var(--border-medium);
-  margin-top: 2px;
+  margin-top: 0.15rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -453,68 +460,56 @@ function handleStart() {
 }
 
 .radio-dot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--text-main);
 }
 
+.level-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .level-title {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 0.2rem;
 }
 
 .level-desc {
-  display: block;
-  font-size: 0.78rem;
+  font-size: 0.83rem;
   color: var(--text-muted);
-  line-height: 1.35;
 }
 
 .setup-actions {
-  margin-top: 2.25rem;
+  margin-top: 2.5rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .btn-start {
-  width: 100%;
-  max-width: 340px;
-  padding: 1.05rem 2rem;
-  font-size: 1.05rem;
+  padding: 0.9rem 2.2rem;
+  font-size: 1rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
-/* Responsive Media Queries */
-@media (max-width: 920px) {
+@media (max-width: 768px) {
   .setup-card {
-    padding: 1.75rem;
+    padding: 1.5rem;
   }
-  .editions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .player-names-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .level-options {
-    grid-template-columns: 1fr;
-  }
-}
 
-@media (max-width: 600px) {
-  .setup-card {
-    padding: 1.25rem;
-  }
   .setup-title {
-    font-size: 1.85rem;
+    font-size: 1.8rem;
   }
-  .editions-grid {
-    grid-template-columns: 1fr;
-  }
-  .player-names-grid {
-    grid-template-columns: 1fr;
+
+  .btn-start {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

@@ -2,44 +2,44 @@
   <div v-if="isOpen" class="modal-backdrop" @click.self="$emit('close')">
     <div class="modal-card modal-summary">
       <div class="summary-header">
-        <h2 class="summary-title font-editorial">Terima Kasih Atas Percakapan yang Hangat</h2>
+        <h2 class="summary-title font-editorial">{{ t('summaryTitle') }}</h2>
         <p class="summary-sub">
-          Setiap jawaban dan kisah yang terbagi hari ini mendekatkan hubungan kalian satu sama lain.
+          {{ t('summarySubtitle') }}
         </p>
       </div>
 
       <div class="stats-overview">
         <div class="stat-box">
           <span class="stat-value font-editorial">{{ history.length }}</span>
-          <span class="stat-label">Kartu Dijawab</span>
+          <span class="stat-label">{{ t('totalCardsDrawn') }}</span>
         </div>
         <div class="stat-box">
           <span class="stat-value font-editorial">{{ players.length }}</span>
-          <span class="stat-label">Pemain Ikut Serta</span>
+          <span class="stat-label">{{ t('playersTitle') }}</span>
         </div>
         <div class="stat-box">
           <span class="stat-value font-editorial">{{ savedCount }}</span>
-          <span class="stat-label">Kartu Tersimpan</span>
+          <span class="stat-label">{{ t('totalSaved') }}</span>
         </div>
       </div>
 
       <div class="history-section" v-if="history.length > 0">
-        <h3 class="history-title font-editorial">Daftar Pertanyaan Terjawab</h3>
-        <div class="history-list">
+        <h3 class="history-title font-editorial">{{ getHistoryTitle() }}</h3>
+        <div class="history-list font-sans">
           <div v-for="(item, idx) in history" :key="idx" class="history-item">
             <span class="history-player">{{ item.player }}:</span>
-            <span class="history-question font-editorial">"{{ item.card.question }}"</span>
+            <span class="history-question font-editorial">"{{ getLocalizedField(item.card.question) }}"</span>
           </div>
         </div>
       </div>
 
-      <div class="summary-actions">
+      <div class="summary-actions font-sans">
         <button class="btn btn-secondary" @click="$emit('continue-playing')">
-          <span>Lanjutkan Bermain</span>
+          <span>{{ getContinueText() }}</span>
         </button>
 
         <button class="btn btn-primary" @click="$emit('new-game')">
-          <span>Mulai Sesi Baru</span>
+          <span>{{ t('playAgain') }}</span>
         </button>
       </div>
     </div>
@@ -49,6 +49,7 @@
 <script setup>
 import { onMounted, watch } from 'vue';
 import confetti from 'canvas-confetti';
+import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
 
 const props = defineProps({
   isOpen: Boolean,
@@ -68,23 +69,38 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'continue-playing', 'new-game']);
 
-watch(() => props.isOpen, (val) => {
-  if (val) {
-    try {
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#E8AEB7', '#CCD5AE', '#D4A373', '#B8C0E0']
-      });
-    } catch (e) {}
+function getHistoryTitle() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'Answered Questions History';
+  if (lang === 'jp') return '回答済み質問の履歴';
+  return 'Daftar Pertanyaan Terjawab';
+}
+
+function getContinueText() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'Continue Playing';
+  if (lang === 'jp') return 'プレイを続ける';
+  return 'Lanjutkan Bermain';
+}
+
+function triggerConfetti() {
+  confetti({
+    particleCount: 60,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    triggerConfetti();
   }
 });
 </script>
 
 <style scoped>
 .modal-summary {
-  max-width: 620px;
+  max-width: 580px;
 }
 
 .summary-header {
@@ -93,18 +109,15 @@ watch(() => props.isOpen, (val) => {
 }
 
 .summary-title {
-  font-size: 2.1rem;
+  font-size: 1.8rem;
   color: var(--text-main);
-  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  line-height: 1.2;
 }
 
 .summary-sub {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  max-width: 480px;
-  margin: 0 auto;
+  line-height: 1.5;
 }
 
 .stats-overview {
@@ -118,22 +131,23 @@ watch(() => props.isOpen, (val) => {
   background: var(--bg-main);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 1.25rem 0.5rem;
+  padding: 1.25rem 0.8rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .stat-value {
   font-size: 2.2rem;
+  font-weight: 700;
   color: var(--text-main);
-  display: block;
   line-height: 1;
-  margin-bottom: 0.3rem;
 }
 
 .stat-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  font-weight: 600;
 }
 
 .history-section {
@@ -141,54 +155,54 @@ watch(() => props.isOpen, (val) => {
 }
 
 .history-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: var(--text-main);
   margin-bottom: 0.85rem;
 }
 
 .history-list {
-  max-height: 220px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding-right: 0.25rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
 }
 
 .history-item {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg-main);
-  border: 1px solid var(--border-light);
-  font-size: 0.9rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  background: var(--bg-main);
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
 }
 
 .history-player {
-  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
+  color: var(--text-main);
+  white-space: nowrap;
 }
 
 .history-question {
-  color: var(--text-main);
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .summary-actions {
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
-@media (max-width: 520px) {
+.summary-actions button {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
   .stats-overview {
     grid-template-columns: 1fr;
-  }
-  .summary-actions {
-    flex-direction: column;
   }
 }
 </style>

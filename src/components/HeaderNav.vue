@@ -5,16 +5,31 @@
       <div class="brand-group" @click="$emit('reset-to-home')" title="Kembali ke Beranda">
         <span class="brand-name font-editorial">Tentang Kita<span class="brand-dot">.</span></span>
         <span class="brand-divider">/</span>
-        <span class="brand-sub font-sans">Conversation Cards</span>
+        <span class="brand-sub font-sans">{{ t('brandSub') }}</span>
       </div>
 
       <!-- Right: Desktop Action Icons -->
       <div class="nav-actions desktop-nav-actions">
+        <!-- Language Switcher Pills -->
+        <div class="lang-switcher font-sans">
+          <button 
+            v-for="lang in LANGUAGES" 
+            :key="lang.code"
+            class="lang-btn"
+            :class="{ active: currentLang === lang.code }"
+            @click="setLanguage(lang.code)"
+            :title="lang.name"
+          >
+            <span class="lang-flag">{{ lang.flag }}</span>
+            <span>{{ lang.label }}</span>
+          </button>
+        </div>
+
         <!-- Sound Toggle -->
         <button 
           class="btn btn-secondary btn-icon-only nav-btn" 
           @click="toggleAudio"
-          :title="soundOn ? 'Matikan Suara' : 'Aktifkan Suara'"
+          :title="soundOn ? t('soundOff') : t('soundOn')"
           aria-label="Toggle Sound"
         >
           <svg v-if="soundOn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -34,7 +49,7 @@
           v-if="isPlaying"
           class="btn btn-secondary nav-btn" 
           @click="$emit('open-saved')"
-          title="Kartu Tersimpan"
+          :title="t('savedCards')"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -43,7 +58,7 @@
         </button>
 
         <!-- Rules / Info Modal -->
-        <button class="btn btn-secondary btn-icon-only nav-btn" @click="$emit('open-rules')" title="Panduan Bermain">
+        <button class="btn btn-secondary btn-icon-only nav-btn" @click="$emit('open-rules')" :title="t('guide')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -52,7 +67,7 @@
         </button>
 
         <!-- Reset Button -->
-        <button v-if="isPlaying" class="btn btn-ghost btn-icon-only nav-btn" @click="$emit('reset-to-home')" title="Keluar / Reset Game">
+        <button v-if="isPlaying" class="btn btn-ghost btn-icon-only nav-btn" @click="$emit('reset-to-home')" :title="t('exitToHome')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
@@ -61,8 +76,21 @@
         </button>
       </div>
 
-      <!-- Right: Mobile Menu Toggle Button -->
+      <!-- Right: Mobile Menu Toggle Button & Compact Language Switcher -->
       <div class="mobile-nav-toggle">
+        <div class="lang-switcher mobile-lang-header font-sans">
+          <button 
+            v-for="lang in LANGUAGES" 
+            :key="lang.code"
+            class="lang-btn"
+            :class="{ active: currentLang === lang.code }"
+            @click="setLanguage(lang.code)"
+            :title="lang.name"
+          >
+            <span>{{ lang.label }}</span>
+          </button>
+        </div>
+
         <button 
           class="btn btn-secondary btn-icon-only" 
           @click="isMobileMenuOpen = true"
@@ -82,7 +110,7 @@
       <div v-if="isMobileMenuOpen" class="mobile-nav-backdrop" @click="isMobileMenuOpen = false">
         <div class="mobile-nav-panel" @click.stop>
           <div class="mobile-panel-header">
-            <span class="mobile-panel-title font-editorial">Menu Navigasi</span>
+            <span class="mobile-panel-title font-editorial">Menu</span>
             <button class="btn btn-ghost btn-icon-only" @click="isMobileMenuOpen = false" aria-label="Tutup Menu">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -92,6 +120,23 @@
           </div>
 
           <div class="mobile-panel-body font-sans">
+            <!-- Language Selector in Mobile Drawer -->
+            <div class="mobile-lang-box">
+              <span class="mobile-lang-label">Bahasa / Language</span>
+              <div class="mobile-lang-grid">
+                <button 
+                  v-for="lang in LANGUAGES" 
+                  :key="lang.code"
+                  class="mobile-lang-btn"
+                  :class="{ active: currentLang === lang.code }"
+                  @click="setLanguage(lang.code)"
+                >
+                  <span class="lang-flag">{{ lang.flag }}</span>
+                  <span>{{ lang.name }}</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Audio Toggle item -->
             <button class="mobile-menu-item" @click="toggleAudio">
               <div class="menu-item-left">
@@ -104,9 +149,9 @@
                   <line x1="23" y1="9" x2="17" y2="15"></line>
                   <line x1="17" y1="9" x2="23" y2="15"></line>
                 </svg>
-                <span>Efek Suara</span>
+                <span>{{ soundOn ? t('soundOn') : t('soundOff') }}</span>
               </div>
-              <span class="mobile-item-badge">{{ soundOn ? 'Aktif' : 'Mati' }}</span>
+              <span class="mobile-item-badge">{{ soundOn ? 'ON' : 'OFF' }}</span>
             </button>
 
             <!-- Saved cards item -->
@@ -119,7 +164,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
-                <span>Kartu Tersimpan</span>
+                <span>{{ t('savedCards') }}</span>
               </div>
               <span class="mobile-item-badge active">{{ savedCount }}</span>
             </button>
@@ -135,7 +180,7 @@
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                <span>Panduan Bermain</span>
+                <span>{{ t('guide') }}</span>
               </div>
             </button>
 
@@ -151,7 +196,7 @@
                   <polyline points="16 17 21 12 16 7"></polyline>
                   <line x1="21" y1="12" x2="9" y2="12"></line>
                 </svg>
-                <span>Keluar ke Beranda</span>
+                <span>{{ t('exitToHome') }}</span>
               </div>
             </button>
           </div>
@@ -164,6 +209,7 @@
 <script setup>
 import { ref } from 'vue';
 import { toggleSound, isSoundEnabled, playButtonClickSound } from '../utils/audio.js';
+import { LANGUAGES, currentLang, setLanguage, t } from '../utils/i18n.js';
 
 const props = defineProps({
   isPlaying: Boolean,
@@ -247,6 +293,48 @@ function toggleAudio() {
   gap: 0.75rem;
 }
 
+/* Language Switcher Styling */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-main);
+  padding: 3px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  margin-right: 0.25rem;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.lang-btn:hover {
+  color: var(--text-main);
+}
+
+.lang-btn.active {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(45, 42, 38, 0.08);
+}
+
+.lang-flag {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
 .saved-count {
   font-size: 0.82rem;
   font-weight: 700;
@@ -262,6 +350,13 @@ function toggleAudio() {
 
 .mobile-nav-toggle {
   display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-lang-header .lang-btn {
+  padding: 4px 7px;
+  font-size: 0.68rem;
 }
 
 /* Mobile Side Panel Overlay */
@@ -277,7 +372,7 @@ function toggleAudio() {
 }
 
 .mobile-nav-panel {
-  width: 280px;
+  width: 290px;
   height: 100%;
   background-color: var(--bg-surface);
   box-shadow: -4px 0 24px rgba(45, 42, 38, 0.15);
@@ -303,8 +398,55 @@ function toggleAudio() {
 .mobile-panel-body {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin-top: 1.25rem;
+}
+
+/* Mobile Language Box */
+.mobile-lang-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-lang-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.mobile-lang-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mobile-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.mobile-lang-btn.active {
+  background: var(--text-main);
+  color: var(--bg-surface);
+  border-color: var(--text-main);
 }
 
 .mobile-menu-item {
@@ -365,7 +507,7 @@ function toggleAudio() {
   to { opacity: 1; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .brand-sub, .brand-divider {
     display: none;
   }
@@ -375,7 +517,7 @@ function toggleAudio() {
   }
 
   .mobile-nav-toggle {
-    display: block;
+    display: flex;
   }
 }
 </style>

@@ -3,18 +3,18 @@
     <div class="modal-card modal-wide">
       <div class="modal-header">
         <div>
-          <h2 class="modal-title font-editorial">Kartu Pertanyaan Tersimpan</h2>
-          <p class="modal-sub">Pertanyaan yang kamu tandai untuk diskusi lebih lanjut atau refleksi pribadi.</p>
+          <h2 class="modal-title font-editorial">{{ t('savedTitle') }}</h2>
+          <p class="modal-sub">{{ getSavedSub() }}</p>
         </div>
         <button class="btn btn-ghost btn-icon-only" @click="$emit('close')">✕</button>
       </div>
 
-      <div v-if="savedCards.length === 0" class="empty-state">
-        <p class="empty-text">Belum ada kartu yang disimpan.</p>
-        <p class="empty-sub">Ketuk ikon "Simpan Pertanyaan" saat kartu terbuka untuk memasukkannya ke sini.</p>
+      <div v-if="savedCards.length === 0" class="empty-state font-sans">
+        <p class="empty-text">{{ getEmptyText() }}</p>
+        <p class="empty-sub">{{ t('savedEmpty') }}</p>
       </div>
 
-      <div v-else class="saved-cards-grid">
+      <div v-else class="saved-cards-grid font-sans">
         <div 
           v-for="card in savedCards" 
           :key="card.id" 
@@ -24,9 +24,9 @@
             <span class="saved-edition-tag">{{ getEditionTitle(card.edition) }}</span>
             <button class="btn-remove-saved" @click="$emit('remove-saved', card.id)" title="Hapus dari simpanan">✕</button>
           </div>
-          <p class="saved-question font-editorial">"{{ card.question }}"</p>
+          <p class="saved-question font-editorial">"{{ getLocalizedField(card.question) }}"</p>
           <div class="saved-item-footer">
-            <span class="saved-category">{{ card.category || 'Refleksi' }}</span>
+            <span class="saved-category">{{ getLocalizedField(card.category) || 'Refleksi' }}</span>
           </div>
         </div>
       </div>
@@ -36,6 +36,7 @@
 
 <script setup>
 import { EDITIONS } from '../data/questions.js';
+import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
 
 const props = defineProps({
   isOpen: Boolean,
@@ -47,8 +48,24 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'remove-saved']);
 
+function getSavedSub() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'Questions you have bookmarked for deeper discussion or personal reflection.';
+  if (lang === 'jp') return '後で深く話し合ったり内省したりするためにブックマークした質問。';
+  return 'Pertanyaan yang kamu tandai untuk diskusi lebih lanjut atau refleksi pribadi.';
+}
+
+function getEmptyText() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'No saved cards yet.';
+  if (lang === 'jp') return '保存されたカードはありません。';
+  return 'Belum ada kartu yang disimpan.';
+}
+
 function getEditionTitle(editionKey) {
-  return EDITIONS[editionKey]?.title || 'Tentang Kita';
+  const ed = EDITIONS[editionKey];
+  if (!ed) return 'Tentang Kita';
+  return getLocalizedField(ed.title);
 }
 </script>
 
@@ -150,13 +167,14 @@ function getEditionTitle(editionKey) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px dashed var(--border-light);
-  padding-top: 0.6rem;
 }
 
 .saved-category {
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-weight: 600;
+  background: var(--bg-surface);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
 }
 </style>

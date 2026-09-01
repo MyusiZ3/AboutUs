@@ -3,13 +3,13 @@
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <h2 class="modal-title font-editorial">Ganti Edisi Kartu</h2>
-          <p class="modal-sub">Pilih edisi yang ingin dimainkan tanpa meriset progres pemain saat ini.</p>
+          <h2 class="modal-title font-editorial">{{ getDrawerTitle() }}</h2>
+          <p class="modal-sub">{{ getDrawerSub() }}</p>
         </div>
         <button class="btn btn-ghost btn-icon-only" @click="$emit('close')">✕</button>
       </div>
 
-      <div class="editions-list">
+      <div class="editions-list font-sans">
         <!-- All Combined -->
         <div 
           class="drawer-edition-item"
@@ -17,8 +17,8 @@
           @click="selectEdition('all')"
         >
           <div class="item-info">
-            <span class="item-title font-editorial">Campur Semua Edisi</span>
-            <span class="item-count">250 Kartu Lengkap</span>
+            <span class="item-title font-editorial">{{ t('combinedTitle') }}</span>
+            <span class="item-count">250 {{ t('cardsUnit') }}</span>
           </div>
           <span class="check-icon" v-if="currentEditionId === 'all'">✓</span>
         </div>
@@ -33,8 +33,8 @@
           @click="selectEdition(key)"
         >
           <div class="item-info">
-            <span class="item-title font-editorial">{{ ed.title }}</span>
-            <span class="item-count">{{ ed.subtitle }}</span>
+            <span class="item-title font-editorial">{{ getLocalizedField(ed.title) }}</span>
+            <span class="item-count">{{ getLocalizedField(ed.subtitle) }}</span>
           </div>
           <span class="check-icon" v-if="currentEditionId === key">✓</span>
         </div>
@@ -46,6 +46,7 @@
 <script setup>
 import { EDITIONS } from '../data/questions.js';
 import { playButtonClickSound } from '../utils/audio.js';
+import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
 
 const props = defineProps({
   isOpen: Boolean,
@@ -55,6 +56,20 @@ const props = defineProps({
 const emit = defineEmits(['close', 'change-edition']);
 
 const editions = EDITIONS;
+
+function getDrawerTitle() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'Change Card Edition';
+  if (lang === 'jp') return 'カードエディションを変更';
+  return 'Ganti Edisi Kartu';
+}
+
+function getDrawerSub() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'Select an edition without resetting current player progress.';
+  if (lang === 'jp') return '現在のプレイヤーの進行状況をリセットせずにエディションを選択します。';
+  return 'Pilih edisi yang ingin dimainkan tanpa meriset progres pemain saat ini.';
+}
 
 function selectEdition(key) {
   playButtonClickSound();
