@@ -417,9 +417,15 @@ function handleStart() {
 }
 
 .level-options {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .level-options {
+    grid-template-columns: 1fr;
+  }
 }
 
 .level-card {
