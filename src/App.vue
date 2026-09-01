@@ -1,27 +1,27 @@
 <template>
-  <div id="app" class="app-layout" :class="{ 'no-scroll-gameplay': gameState === 'playing' }">
-    <!-- Navbar Navigation -->
+  <div id="app-root">
+    <!-- Header -->
     <HeaderNav 
-      :isPlaying="gameState === 'playing'"
+      :isPlaying="isPlaying"
       :savedCount="savedCards.length"
       @reset-to-home="resetToHome"
       @open-rules="isRulesOpen = true"
       @open-saved="isSavedOpen = true"
     />
 
-    <!-- Main Content Body -->
-    <main class="main-content">
-      <!-- SETUP STATE -->
+    <!-- Main View Switcher -->
+    <main class="app-main">
+      <!-- SETUP VIEW -->
       <GameSetup 
-        v-if="gameState === 'setup'"
-        @start-game="startGame"
+        v-if="!isPlaying"
+        @start-game="handleStartGame"
       />
 
-      <!-- PLAYING STATE (Split Screen Viewport - No Scroll) -->
-      <div v-else-if="gameState === 'playing'" class="gameplay-viewport">
-        <div class="container-wide gameplay-split-grid">
+      <!-- GAMEPLAY VIEW (Zero-Scroll Dual Panel Layout) -->
+      <div v-else class="gameplay-viewport container-wide">
+        <div class="gameplay-split-grid">
           
-          <!-- LEFT COLUMN: Interactive 3D Card -->
+          <!-- LEFT COLUMN: 3D Interactive Question Card -->
           <div class="gameplay-left-col">
             <CardDisplay 
               v-if="currentCard"
@@ -35,86 +35,89 @@
             />
           </div>
 
-          <!-- RIGHT COLUMN: Dashboard & Controls -->
+          <!-- RIGHT COLUMN: Unified Control & Turn Dashboard -->
           <div class="gameplay-right-col">
-            
-            <!-- Turn & Players Status Panel -->
-            <div class="dashboard-panel turn-panel">
-              <div class="panel-header">
-                <span class="panel-subtitle font-sans">Giliran Berbicara</span>
-                <h2 class="panel-player-name font-editorial">{{ players[currentPlayerIndex] }}</h2>
-              </div>
+            <div class="dashboard-panel control-dashboard">
+              <!-- Top: Turn & Players Status -->
+              <div class="dashboard-top">
+                <div class="panel-header">
+                  <span class="panel-subtitle font-sans">Giliran Berbicara</span>
+                  <h2 class="panel-player-name font-editorial">{{ players[currentPlayerIndex] }}</h2>
+                </div>
 
-              <!-- Players list -->
-              <div class="players-chips-list font-sans">
-                <div 
-                  v-for="(player, idx) in players" 
-                  :key="idx"
-                  class="player-chip-item"
-                  :class="{ active: currentPlayerIndex === idx }"
-                >
-                  <span class="chip-status-dot"></span>
-                  <span class="chip-player-name">{{ player }}</span>
+                <!-- Players list -->
+                <div class="players-chips-list font-sans">
+                  <div 
+                    v-for="(player, idx) in players" 
+                    :key="idx"
+                    class="player-chip-item"
+                    :class="{ active: currentPlayerIndex === idx }"
+                  >
+                    <span class="chip-status-dot"></span>
+                    <span class="chip-player-name">{{ player }}</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- Deck Progress -->
+              <!-- Middle: Deck Progress Bar -->
               <div class="progress-box font-sans">
                 <div class="progress-bar-bg">
                   <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
                 </div>
                 <span class="progress-label">{{ history.length }} / {{ deck.length }} Terjawab</span>
               </div>
-            </div>
 
-            <!-- Action Controls Panel -->
-            <div class="dashboard-panel actions-panel">
-              <button 
-                class="btn btn-primary btn-next-turn-large"
-                @click="nextTurn"
-              >
-                <span>Lanjut Giliran Pemain</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
+              <div class="dashboard-divider"></div>
 
-              <div class="quick-action-grid">
-                <button class="btn btn-secondary" @click="skipCard" title="Tarik kartu lain tanpa ganti giliran">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="13 17 18 12 13 7"></polyline>
-                    <polyline points="6 17 11 12 6 7"></polyline>
+              <!-- Bottom: Actions -->
+              <div class="dashboard-actions">
+                <button 
+                  class="btn btn-primary btn-next-turn-large"
+                  @click="nextTurn"
+                >
+                  <span>Lanjut Giliran Pemain</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
-                  <span>Ganti Kartu</span>
                 </button>
 
-                <button class="btn btn-secondary" @click="isEditionDrawerOpen = true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                  </svg>
-                  <span>Ganti Edisi</span>
-                </button>
+                <div class="quick-action-grid">
+                  <button class="btn btn-secondary" @click="skipCard" title="Tarik kartu lain tanpa ganti giliran">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="13 17 18 12 13 7"></polyline>
+                      <polyline points="6 17 11 12 6 7"></polyline>
+                    </svg>
+                    <span>Ganti Kartu</span>
+                  </button>
 
-                <button class="btn btn-secondary" @click="isSavedOpen = true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                  <span>Tersimpan ({{ savedCards.length }})</span>
-                </button>
+                  <button class="btn btn-secondary" @click="isEditionDrawerOpen = true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Ganti Edisi</span>
+                  </button>
 
-                <button class="btn btn-ghost btn-finish-session" @click="isSummaryOpen = true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                  <span>Selesai Sesi</span>
-                </button>
+                  <button class="btn btn-secondary" @click="isSavedOpen = true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Tersimpan ({{ savedCards.length }})</span>
+                  </button>
+
+                  <button class="btn btn-ghost btn-finish-session" @click="isSummaryOpen = true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Selesai Sesi</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
+            </div>
           </div>
 
         </div>
@@ -134,28 +137,27 @@
       @close="isRulesOpen = false"
     />
 
-    <SavedCardsModal 
+    <SavedCardsModal
       :isOpen="isSavedOpen"
       :savedCards="savedCards"
       @close="isSavedOpen = false"
       @remove-saved="removeSavedCard"
     />
 
-    <EditionDrawer 
-      :isOpen="isEditionDrawerOpen"
-      :currentEditionId="selectedEditionId"
-      @close="isEditionDrawerOpen = false"
-      @change-edition="changeEditionMidGame"
+    <SessionSummaryModal
+      :isOpen="isSummaryOpen"
+      :players="players"
+      :history="history"
+      :savedCardsCount="savedCards.length"
+      @close="isSummaryOpen = false"
+      @reset-game="resetToHome"
     />
 
-    <SessionSummaryModal 
-      :isOpen="isSummaryOpen"
-      :history="history"
-      :players="players"
-      :savedCount="savedCards.length"
-      @close="isSummaryOpen = false"
-      @continue-playing="isSummaryOpen = false"
-      @new-game="resetToHome"
+    <EditionDrawer
+      :isOpen="isEditionDrawerOpen"
+      :currentEdition="selectedEdition"
+      @close="isEditionDrawerOpen = false"
+      @change-edition="handleChangeEdition"
     />
   </div>
 </template>
@@ -167,185 +169,168 @@ import GameSetup from './components/GameSetup.vue';
 import CardDisplay from './components/CardDisplay.vue';
 import RulesModal from './components/RulesModal.vue';
 import SavedCardsModal from './components/SavedCardsModal.vue';
-import EditionDrawer from './components/EditionDrawer.vue';
 import SessionSummaryModal from './components/SessionSummaryModal.vue';
+import EditionDrawer from './components/EditionDrawer.vue';
 
 import { QUESTIONS, EDITIONS } from './data/questions.js';
-import { playShuffleSound, playButtonClickSound } from './utils/audio.js';
+import { playCardFlipSound, playButtonClickSound } from './utils/audio.js';
 
-// Application State
-const gameState = ref('setup'); // 'setup' | 'playing'
+function getFilteredQuestions(editionId, levelFilter) {
+  let list = QUESTIONS;
+  if (editionId !== 'all') {
+    list = list.filter(q => q.edition === editionId);
+  }
+  if (levelFilter && levelFilter > 0) {
+    list = list.filter(q => q.level === levelFilter);
+  }
+  return list;
+}
+
+// Game state
+const isPlaying = ref(false);
 const players = ref(['Pemain 1', 'Pemain 2']);
 const currentPlayerIndex = ref(0);
-const selectedEditionId = ref('pasangan');
-const levelFilter = ref(0);
+const selectedEdition = ref('pasangan');
+const selectedLevel = ref(0);
 
+// Deck state
 const deck = ref([]);
 const currentCardIndex = ref(0);
 const isFlipped = ref(false);
-const history = ref([]);
-const savedCards = ref([]);
+const history = ref([]); // Cards played in this session
+const savedCards = ref([]); // Saved questions for later
 
-// Modals State
+// Modals / Drawers
 const isRulesOpen = ref(false);
 const isSavedOpen = ref(false);
-const isEditionDrawerOpen = ref(false);
 const isSummaryOpen = ref(false);
-
-// Saved Cards LocalStorage Sync
-onMounted(() => {
-  try {
-    const localSaved = localStorage.getItem('tk_saved_cards');
-    if (localSaved) {
-      savedCards.value = JSON.parse(localSaved);
-    }
-  } catch (e) {}
-});
-
-function saveToLocalStorage() {
-  try {
-    localStorage.setItem('tk_saved_cards', JSON.stringify(savedCards.value));
-  } catch (e) {}
-}
+const isEditionDrawerOpen = ref(false);
 
 const currentCard = computed(() => {
   return deck.value[currentCardIndex.value] || null;
 });
 
 const progressPercent = computed(() => {
-  if (!deck.value.length) return 0;
-  return Math.min(100, Math.round((history.value.length / deck.value.length) * 100));
+  if (deck.value.length === 0) return 0;
+  return Math.round((history.value.length / deck.value.length) * 100);
 });
 
-const activeEditionData = computed(() => {
-  if (selectedEditionId.value === 'all') {
-    return {
-      id: 'all',
-      title: 'Campur Semua Edisi',
-      themeColor: '#D4A373',
-      cardBg: '#FFFDF9'
-    };
+onMounted(() => {
+  // Load saved cards from localStorage if available
+  const stored = localStorage.getItem('tentang_kita_saved_cards');
+  if (stored) {
+    try {
+      savedCards.value = JSON.parse(stored);
+    } catch (e) {
+      savedCards.value = [];
+    }
   }
-  return EDITIONS[selectedEditionId.value] || EDITIONS.pasangan;
 });
 
-// Fisher-Yates Shuffle
-function shuffleDeck(cards) {
-  const array = [...cards];
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function filterAndPrepareDeck(editionId, level) {
-  let list = QUESTIONS;
-  if (editionId !== 'all') {
-    list = list.filter(q => q.edition === editionId);
-  }
-  if (level !== 0) {
-    list = list.filter(q => q.level === level);
-  }
-  return shuffleDeck(list);
-}
-
-function startGame(config) {
-  players.value = config.players;
-  selectedEditionId.value = config.editionId;
-  levelFilter.value = config.levelFilter;
-
-  deck.value = filterAndPrepareDeck(config.editionId, config.levelFilter);
+function handleStartGame(setupData) {
+  players.value = setupData.players;
+  selectedEdition.value = setupData.editionId;
+  selectedLevel.value = setupData.levelFilter;
+  
+  // Build and shuffle deck
+  let filtered = getFilteredQuestions(selectedEdition.value, selectedLevel.value);
+  deck.value = shuffleArray([...filtered]);
+  
   currentCardIndex.value = 0;
   currentPlayerIndex.value = 0;
   isFlipped.value = false;
   history.value = [];
-  gameState.value = 'playing';
-
-  playShuffleSound();
+  isPlaying.value = true;
 }
 
 function nextTurn() {
-  playButtonClickSound();
-  if (currentCard.value) {
-    history.value.push({
-      player: players.value[currentPlayerIndex.value],
-      card: currentCard.value
-    });
+  playCardFlipSound();
+  
+  // Record history
+  if (currentCard.value && !history.value.find(h => h.id === currentCard.value.id)) {
+    history.value.push(currentCard.value);
   }
-
-  isFlipped.value = false;
 
   // Advance player turn
   currentPlayerIndex.value = (currentPlayerIndex.value + 1) % players.value.length;
-
+  
   // Advance card index
-  if (currentCardIndex.value + 1 < deck.value.length) {
+  if (currentCardIndex.value < deck.value.length - 1) {
     currentCardIndex.value++;
   } else {
-    // Deck finished, auto open summary
-    isSummaryOpen.value = true;
+    // Re-shuffle deck if finished
+    deck.value = shuffleArray([...deck.value]);
+    currentCardIndex.value = 0;
   }
+  
+  isFlipped.value = false;
 }
 
 function skipCard() {
   playButtonClickSound();
-  isFlipped.value = false;
-  if (currentCardIndex.value + 1 < deck.value.length) {
+  if (currentCardIndex.value < deck.value.length - 1) {
     currentCardIndex.value++;
   } else {
-    // Reshuffle if reached the end
-    deck.value = shuffleDeck(deck.value);
+    deck.value = shuffleArray([...deck.value]);
     currentCardIndex.value = 0;
   }
+  isFlipped.value = false;
 }
 
-function changeEditionMidGame(newEditionId) {
-  selectedEditionId.value = newEditionId;
-  deck.value = filterAndPrepareDeck(newEditionId, levelFilter.value);
+function handleChangeEdition(editionId) {
+  selectedEdition.value = editionId;
+  let filtered = getFilteredQuestions(editionId, selectedLevel.value);
+  deck.value = shuffleArray([...filtered]);
   currentCardIndex.value = 0;
   isFlipped.value = false;
-  playShuffleSound();
+  isEditionDrawerOpen.value = false;
+}
+
+function toggleSaveCard() {
+  playButtonClickSound();
+  if (!currentCard.value) return;
+  const idx = savedCards.value.findIndex(c => c.id === currentCard.value.id);
+  if (idx >= 0) {
+    savedCards.value.splice(idx, 1);
+  } else {
+    savedCards.value.push(currentCard.value);
+  }
+  localStorage.setItem('tentang_kita_saved_cards', JSON.stringify(savedCards.value));
+}
+
+function removeSavedCard(cardId) {
+  playButtonClickSound();
+  savedCards.value = savedCards.value.filter(c => c.id !== cardId);
+  localStorage.setItem('tentang_kita_saved_cards', JSON.stringify(savedCards.value));
 }
 
 function isCardSaved(cardId) {
   return savedCards.value.some(c => c.id === cardId);
 }
 
-function toggleSaveCard(card) {
-  const index = savedCards.value.findIndex(c => c.id === card.id);
-  if (index >= 0) {
-    savedCards.value.splice(index, 1);
-  } else {
-    savedCards.value.push(card);
-  }
-  saveToLocalStorage();
-}
-
-function removeSavedCard(cardId) {
-  savedCards.value = savedCards.value.filter(c => c.id !== cardId);
-  saveToLocalStorage();
-}
-
 function resetToHome() {
-  gameState.value = 'setup';
-  isSummaryOpen.value = false;
+  playButtonClickSound();
+  isPlaying.value = false;
+}
+
+// Utility Fisher-Yates shuffle
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 </script>
 
 <style scoped>
-.app-layout {
+#app-root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.no-scroll-gameplay {
-  height: 100vh;
-  overflow: hidden;
-}
-
-.main-content {
+.app-main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -358,51 +343,59 @@ function resetToHome() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 0;
-  height: calc(100vh - 110px);
+  padding: 1.5rem 0;
+  min-height: calc(100vh - 120px);
 }
 
 .gameplay-split-grid {
   display: grid;
-  grid-template-columns: 1fr 1.05fr;
-  gap: 2.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
   align-items: center;
+  justify-items: center;
   width: 100%;
-  height: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
 }
 
 .gameplay-left-col {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .gameplay-right-col {
+  width: 100%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  justify-content: center;
-  max-width: 480px;
 }
 
-/* Dashboard Panels */
-.dashboard-panel {
+/* Single Control Dashboard Panel */
+.control-dashboard {
   background-color: var(--bg-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-medium);
-  padding: 1.5rem 1.75rem;
+  padding: 2.25rem 2rem;
   box-shadow: var(--shadow-soft);
-}
-
-.turn-panel {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.25rem;
+  height: 480px;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.dashboard-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .panel-header {
   border-bottom: 1px solid var(--border-light);
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.65rem;
 }
 
 .panel-subtitle {
@@ -432,9 +425,9 @@ function resetToHome() {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.8rem;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   background: var(--bg-main);
   color: var(--text-muted);
@@ -488,24 +481,29 @@ function resetToHome() {
   white-space: nowrap;
 }
 
+.dashboard-divider {
+  height: 1px;
+  background-color: var(--border-light);
+}
+
 /* Actions Panel */
-.actions-panel {
+.dashboard-actions {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .btn-next-turn-large {
   width: 100%;
-  padding: 1.1rem 1.5rem;
-  font-size: 1.05rem;
+  padding: 1rem 1.5rem;
+  font-size: 1.02rem;
   box-shadow: 0 8px 24px -6px rgba(45, 42, 38, 0.25);
 }
 
 .quick-action-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .btn-finish-session {
@@ -525,26 +523,28 @@ function resetToHome() {
 }
 
 .footer-copy {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* Responsive adjustments */
+/* Mobile Responsiveness */
 @media (max-width: 900px) {
-  .no-scroll-gameplay {
-    height: auto;
-    overflow: auto;
-  }
   .gameplay-viewport {
     height: auto;
-    padding: 1.5rem 0;
+    padding: 2rem 0;
   }
+
   .gameplay-split-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
   }
+
   .gameplay-right-col {
-    max-width: 100%;
+    max-width: 440px;
+  }
+
+  .control-dashboard {
+    height: auto;
   }
 }
 </style>
