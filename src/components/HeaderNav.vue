@@ -1,13 +1,11 @@
 <template>
   <header class="nav-header">
     <div class="container-wide nav-content">
-      <!-- Left: Logo & Brand -->
-      <div class="brand-group" @click="$emit('reset-to-home')">
-        <div class="brand-mark font-editorial">TK</div>
-        <div class="brand-text">
-          <span class="brand-name font-editorial">Tentang Kita</span>
-          <span class="brand-sub">Conversation Card Game</span>
-        </div>
+      <!-- Left: Clean Editorial Logotype (No Generic Circle Emblem) -->
+      <div class="brand-group" @click="$emit('reset-to-home')" title="Kembali ke Beranda">
+        <span class="brand-name font-editorial">Tentang Kita<span class="brand-dot">.</span></span>
+        <span class="brand-divider">/</span>
+        <span class="brand-sub font-sans">Conversation Cards</span>
       </div>
 
       <!-- Right: Action Icons -->
@@ -95,7 +93,7 @@ function toggleAudio() {
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 0.85rem 0;
+  padding: 0.95rem 0;
 }
 
 .nav-content {
@@ -104,45 +102,45 @@ function toggleAudio() {
   justify-content: space-between;
 }
 
+/* Pure Editorial Logotype Styling (No AI-slop circle avatar) */
 .brand-group {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
   cursor: pointer;
   user-select: none;
+  transition: opacity 0.2s ease;
 }
 
-.brand-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background-color: var(--text-main);
-  color: var(--bg-main);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
+.brand-group:hover {
+  opacity: 0.8;
 }
 
 .brand-name {
-  font-size: 1.2rem;
+  font-size: 1.45rem;
   font-weight: 600;
-  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--text-main);
+  line-height: 1;
+}
+
+.brand-dot {
+  color: #D4A373;
+  font-weight: 700;
+}
+
+.brand-divider {
+  font-size: 0.9rem;
+  color: var(--border-medium);
+  font-weight: 300;
 }
 
 .brand-sub {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .nav-actions {
@@ -165,7 +163,7 @@ function toggleAudio() {
 }
 
 @media (max-width: 640px) {
-  .brand-sub {
+  .brand-sub, .brand-divider {
     display: none;
   }
 }

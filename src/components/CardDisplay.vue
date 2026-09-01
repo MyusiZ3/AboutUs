@@ -17,11 +17,9 @@
           <div class="card-texture-overlay"></div>
           <div class="card-inner-border" :style="{ borderColor: editionData.themeColor + '40' }"></div>
 
-          <!-- Top emblem -->
+          <!-- Top Brand Header -->
           <div class="card-front-top">
-            <div class="edition-emblem" :style="{ backgroundColor: editionData.themeColor + '25', color: editionData.themeColor }">
-              <span class="emblem-text font-editorial">TK</span>
-            </div>
+            <span class="front-deck-brand font-editorial">Tentang Kita<span class="brand-dot">.</span></span>
             <span class="front-deck-badge font-sans">Edisi Kartu</span>
           </div>
 
@@ -180,15 +178,16 @@ function getLevelText(level) {
   z-index: 2;
 }
 
-.edition-emblem {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.front-deck-brand {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.brand-dot {
+  color: #D4A373;
   font-weight: 700;
-  font-size: 1rem;
 }
 
 .front-deck-badge {
