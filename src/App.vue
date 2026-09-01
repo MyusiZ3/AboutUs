@@ -3,12 +3,10 @@
     <!-- Navbar Navigation -->
     <HeaderNav 
       :isPlaying="gameState === 'playing'"
-      :selectedEditionId="selectedEditionId"
       :savedCount="savedCards.length"
       @reset-to-home="resetToHome"
       @open-rules="isRulesOpen = true"
       @open-saved="isSavedOpen = true"
-      @change-edition="changeEditionMidGame"
     />
 
     <!-- Main Content Body -->

@@ -12,30 +12,6 @@
 
       <!-- Right: Action Icons -->
       <div class="nav-actions">
-        <!-- Real Functional Interactive Edition Dropdown -->
-        <div v-if="isPlaying" class="nav-edition-dropdown-container">
-          <label for="edition-select" class="edition-label-prefix font-sans">EDISI:</label>
-          <div class="select-wrapper">
-            <select 
-              id="edition-select"
-              class="nav-edition-select font-sans"
-              :value="selectedEditionId"
-              @change="handleEditionChange"
-              title="Pilih Edisi Kartu"
-            >
-              <option value="all">Campur Semua Edisi (250 Kartu)</option>
-              <option value="pasangan">Edisi Pasangan (50 Kartu)</option>
-              <option value="teman">Edisi Sahabat & Teman (50 Kartu)</option>
-              <option value="pernikahan">Edisi Pernikahan & Masa Depan (50 Kartu)</option>
-              <option value="refleksi">Edisi Refleksi & Diri Sendiri (50 Kartu)</option>
-              <option value="keluarga">Edisi Keluarga & Nostalgia (50 Kartu)</option>
-            </select>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="select-caret">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
-
         <!-- Sound Toggle -->
         <button 
           class="btn btn-secondary btn-icon-only nav-btn" 
@@ -96,14 +72,10 @@ import { toggleSound, isSoundEnabled, playButtonClickSound } from '../utils/audi
 
 const props = defineProps({
   isPlaying: Boolean,
-  selectedEditionId: {
-    type: String,
-    default: 'pasangan'
-  },
   savedCount: Number
 });
 
-const emit = defineEmits(['reset-to-home', 'open-rules', 'open-saved', 'change-edition']);
+const emit = defineEmits(['reset-to-home', 'open-rules', 'open-saved']);
 
 const soundOn = ref(isSoundEnabled());
 
@@ -112,11 +84,6 @@ function toggleAudio() {
   if (soundOn.value) {
     playButtonClickSound();
   }
-}
-
-function handleEditionChange(event) {
-  playButtonClickSound();
-  emit('change-edition', event.target.value);
 }
 </script>
 
@@ -184,63 +151,6 @@ function handleEditionChange(event) {
   gap: 0.75rem;
 }
 
-/* Functional Dropdown Styling */
-.nav-edition-dropdown-container {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.edition-label-prefix {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  font-weight: 700;
-  user-select: none;
-}
-
-.select-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  border-bottom: 1.5px solid var(--border-medium);
-  padding-bottom: 2px;
-  transition: var(--transition-smooth);
-}
-
-.select-wrapper:hover {
-  border-bottom-color: var(--text-main);
-}
-
-.nav-edition-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: transparent;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-main);
-  padding-right: 1.2rem;
-  padding-left: 0.1rem;
-  cursor: pointer;
-  outline: none;
-}
-
-.nav-edition-select option {
-  background-color: var(--bg-surface);
-  color: var(--text-main);
-  padding: 0.5rem;
-}
-
-.select-caret {
-  position: absolute;
-  right: 0;
-  pointer-events: none;
-  color: var(--text-muted);
-}
-
 .saved-count {
   font-size: 0.82rem;
   font-weight: 700;
@@ -256,9 +166,6 @@ function handleEditionChange(event) {
 
 @media (max-width: 640px) {
   .brand-sub {
-    display: none;
-  }
-  .edition-label-prefix {
     display: none;
   }
 }
