@@ -187,9 +187,9 @@ export function t(key) {
 
 export function formatPlayerName(name) {
   if (!name) return '';
-  const match = name.match(/^Pemain\s+(\d+)$/i);
+  const match = name.match(/^(Pemain|Player|プレイヤー)\s+(\d+)$/i);
   if (match) {
-    const num = match[1];
+    const num = match[2];
     const prefix = t('playerPrefix');
     return `${prefix} ${num}`;
   }
@@ -205,17 +205,86 @@ const categoryTranslations = {
   'Komunikasi': { id: 'Komunikasi', en: 'Communication', jp: 'コミュニケーション' },
   'Kepercayaan': { id: 'Kepercayaan', en: 'Trust & Honesty', jp: '信頼と誠実さ' },
   'Konflik': { id: 'Konflik', en: 'Conflict Resolution', jp: '葛藤の解決' },
-  'Masa Depan': { id: 'Masa Depan', en: 'Future Plans', jp: '未来の計画' },
+  'Ruang Pribadi': { id: 'Ruang Pribadi', en: 'Personal Space', jp: '個人の時間' },
+  'Dukungan': { id: 'Dukungan', en: 'Support', jp: 'サポート' },
   'Intimasi': { id: 'Intimasi', en: 'Intimacy', jp: '親密さ' },
   'Impian Bersama': { id: 'Impian Bersama', en: 'Shared Dreams', jp: '共にある夢' },
-  'Visi Pernikahan': { id: 'Visi Pernikahan', en: 'Marriage Vision', jp: '結婚のビジョン' },
-  'Pengelolaan Keuangan': { id: 'Pengelolaan Keuangan', en: 'Financial Management', jp: '金銭管理' },
-  'Hubungan Keluarga': { id: 'Hubungan Keluarga', en: 'Family Relations', jp: '家族関係' },
-  'Pendewasaan Diri': { id: 'Pendewasaan Diri', en: 'Personal Growth', jp: '自己成長' },
-  'Nostalgia Masa Kecil': { id: 'Nostalgia Masa Kecil', en: 'Childhood Memories', jp: '子供時代の思い出' },
-  'Refleksi Diri': { id: 'Refleksi Diri', en: 'Self Reflection', jp: '自己内省' },
+  'Kenangan': { id: 'Kenangan', en: 'Memories', jp: '思い出' },
+  'Pola Komunikasi': { id: 'Pola Komunikasi', en: 'Communication Patterns', jp: '対話のパターン' },
   'Ekspektasi': { id: 'Ekspektasi', en: 'Expectations', jp: '期待と価値観' },
-  'Persahabatan': { id: 'Persahabatan', en: 'Friendship', jp: '友情' }
+  'Kerentanan': { id: 'Kerentanan', en: 'Vulnerability', jp: '素直な気持ち' },
+  'Komitmen': { id: 'Komitmen', en: 'Commitment', jp: 'コミットメント' },
+  'Penerimaan': { id: 'Penerimaan', en: 'Acceptance', jp: '受け入れ' },
+  'Masa Depan': { id: 'Masa Depan', en: 'Future Plans', jp: '未来の計画' },
+  'Tumbuh Bersama': { id: 'Tumbuh Bersama', en: 'Growing Together', jp: '共に成長' },
+  'Keunikan': { id: 'Keunikan', en: 'Uniqueness', jp: 'ユニークさ' },
+  'Nostalgia': { id: 'Nostalgia', en: 'Nostalgia', jp: 'ノスタルジー' },
+  'Perhatian': { id: 'Perhatian', en: 'Care & Attention', jp: '思いやり' },
+  'Dukungan Karir': { id: 'Dukungan Karir', en: 'Career Support', jp: 'キャリア支援' },
+  'Kecemburuan': { id: 'Kecemburuan', en: 'Jealousy', jp: '嫉妬と本音' },
+  'Beban Emosi': { id: 'Beban Emosi', en: 'Emotional Weight', jp: '心の負担' },
+  'Pengampunan': { id: 'Pengampunan', en: 'Forgiveness', jp: '許し' },
+  'Pertumbuhan': { id: 'Pertumbuhan', en: 'Growth', jp: '成長' },
+  'Makna Kasih': { id: 'Makna Kasih', en: 'Meaning of Love', jp: '愛の意味' },
+  'Kepercayaan Utama': { id: 'Kepercayaan Utama', en: 'Core Trust', jp: '根本的な信頼' },
+  'Kerapuhan': { id: 'Kerapuhan', en: 'Vulnerability', jp: '脆さと弱さ' },
+  'Bercanda': { id: 'Bercanda', en: 'Humor & Fun', jp: 'ユーモア' },
+  'Kehadiran': { id: 'Kehadiran', en: 'Presence', jp: '存在感' },
+  'Keseimbangan': { id: 'Keseimbangan', en: 'Balance', jp: 'バランス' },
+  'Empati': { id: 'Empati', en: 'Empathy', jp: '共感' },
+  'Kebersamaan': { id: 'Kebersamaan', en: 'Togetherness', jp: '共に過ごす時間' },
+  'Kesetiaan': { id: 'Kesetiaan', en: 'Loyalty', jp: '忠実さ' },
+  'Saling Menjaga': { id: 'Saling Menjaga', en: 'Mutual Care', jp: 'お互いを守る' },
+  'Pujian': { id: 'Pujian', en: 'Compliments', jp: '褒め言葉' },
+  'Penghargaan': { id: 'Penghargaan', en: 'Appreciation', jp: '感謝と敬意' },
+  'Harapan Utama': { id: 'Harapan Utama', en: 'Main Hopes', jp: '主な希望' },
+  'Kencan Spesial': { id: 'Kencan Spesial', en: 'Special Dates', jp: '特別なデート' },
+  'Perhatian Kecil': { id: 'Perhatian Kecil', en: 'Small Gestures', jp: '小さな思いやり' },
+  'Saling Membantu': { id: 'Saling Membantu', en: 'Helping Each Other', jp: '助け合い' },
+  'Visi Bersama': { id: 'Visi Bersama', en: 'Shared Vision', jp: '共通のビジョン' },
+  'Rasa Percaya': { id: 'Rasa Percaya', en: 'Sense of Trust', jp: '信頼感' },
+  'Kesan Pertama': { id: 'Kesan Pertama', en: 'First Impression', jp: '第一印象' },
+  'Karakter Unik': { id: 'Karakter Unik', en: 'Unique Character', jp: 'ユニークな性格' },
+  'Tempat Favorit': { id: 'Tempat Favorit', en: 'Favorite Spots', jp: 'お気に入りの場所' },
+  'Pujian Sahabat': { id: 'Pujian Sahabat', en: 'Friend\'s Praise', jp: '親友からの称賛' },
+  'Kejujuran': { id: 'Kejujuran', en: 'Honesty', jp: '誠実さ' },
+  'Dinamika': { id: 'Dinamika', en: 'Dynamics', jp: 'ダイナミクス' },
+  'Perspektif': { id: 'Perspektif', en: 'Perspective', jp: '視点と価値観' },
+  'Kesalahpahaman': { id: 'Kesalahpahaman', en: 'Misunderstandings', jp: '誤解の解消' },
+  'Saling Jaga': { id: 'Saling Jaga', en: 'Caring for Each Other', jp: '見守り合い' },
+  'Impian': { id: 'Impian', en: 'Dreams', jp: '夢' },
+  'Batas Pertemanan': { id: 'Batas Pertemanan', en: 'Friendship Boundaries', jp: '友情の境界線' },
+  'Rasa Syukur': { id: 'Rasa Syukur', en: 'Gratitude', jp: '感謝の気持ち' },
+  'Kebiasaan Pendengar': { id: 'Kebiasaan Pendengar', en: 'Listening Habits', jp: '傾聴の習慣' },
+  'Perubahan Diri': { id: 'Perubahan Diri', en: 'Personal Shift', jp: '自己の変化' },
+  'Kesepian': { id: 'Kesepian', en: 'Loneliness', jp: '孤独感' },
+  'Pelajaran Hidup': { id: 'Pelajaran Hidup', en: 'Life Lessons', jp: '人生の教訓' },
+  'Harapan Masa Depan': { id: 'Harapan Masa Depan', en: 'Future Hopes', jp: '未来への願い' },
+  'Karakter': { id: 'Karakter', en: 'Character', jp: '人柄' },
+  'Peran': { id: 'Peran', en: 'Role', jp: '役割' },
+  'Penilaian Jujur': { id: 'Penilaian Jujur', en: 'Honest Feedback', jp: '率直な評価' },
+  'Emosi': { id: 'Emosi', en: 'Emotions', jp: '感情' },
+  'Nilai Hidup': { id: 'Nilai Hidup', en: 'Life Values', jp: '人生観' },
+  'Pendewasaan': { id: 'Pendewasaan', en: 'Maturity', jp: '成熟' },
+  'Finansial': { id: 'Finansial', en: 'Finances', jp: '金銭面' },
+  'Pembagian Peran': { id: 'Pembagian Peran', en: 'Role Division', jp: '役割分担' },
+  'Hubungan Mertua': { id: 'Hubungan Mertua', en: 'In-Laws', jp: '義理の家族' },
+  'Parenting': { id: 'Parenting', en: 'Parenting', jp: '子育て' },
+  'Visi Pernikahan': { id: 'Visi Pernikahan', en: 'Marriage Vision', jp: '結婚のビジョン' },
+  'Pengelolaan Keuangan': { id: 'Pengelolaan Keuangan', en: 'Financial Management', jp: '資産管理' },
+  'Hubungan Keluarga': { id: 'Hubungan Keluarga', en: 'Family Relations', jp: '家族関係' },
+  'Refleksi Diri': { id: 'Refleksi Diri', en: 'Self Reflection', jp: '自己省察' },
+  'Nilai Kerja Keras': { id: 'Nilai Kerja Keras', en: 'Work Ethic', jp: '勤勉さの価値' },
+  'Dukungan Moral': { id: 'Dukungan Moral', en: 'Moral Support', jp: '精神的支え' },
+  'Pengabdian': { id: 'Pengabdian', en: 'Devotion', jp: '献身' },
+  'Pelajaran Cinta': { id: 'Pelajaran Cinta', en: 'Lessons of Love', jp: '愛の学び' },
+  'Kenangan Manis': { id: 'Kenangan Manis', en: 'Sweet Memories', jp: '甘い思い出' },
+  'Pesan Keabadian': { id: 'Pesan Keabadian', en: 'Eternal Message', jp: '永遠のメッセージ' },
+  'Makan Bersama': { id: 'Makan Bersama', en: 'Meals Together', jp: '共に囲む食卓' },
+  'Pelajaran Sederhana': { id: 'Pelajaran Sederhana', en: 'Simple Lessons', jp: '素朴な教訓' },
+  'Suasana Hangat': { id: 'Suasana Hangat', en: 'Warm Atmosphere', jp: '温かい空気感' },
+  'Terima Kasih Tulus': { id: 'Terima Kasih Tulus', en: 'Heartfelt Thanks', jp: '心からの感謝' },
+  'Prinsip Kehormatan': { id: 'Prinsip Kehormatan', en: 'Principles of Honor', jp: '誇りの原則' }
 };
 
 export function getLocalizedCategory(cat) {
@@ -235,4 +304,32 @@ export function getLocalizedField(field) {
     return field[lang] || field.id || field.en || field.jp || '';
   }
   return field;
+}
+
+import { QUESTION_TRANSLATIONS } from './questionTranslations.js';
+
+export function getLocalizedQuestion(cardOrQuestion) {
+  if (!cardOrQuestion) return '';
+  const lang = currentLang.value;
+
+  // 1. If passed full card object
+  if (typeof cardOrQuestion === 'object') {
+    const card = cardOrQuestion;
+    if (card.question && typeof card.question === 'object') {
+      return card.question[lang] || card.question.id || card.question.en || card.question.jp || '';
+    }
+    if (card.id && QUESTION_TRANSLATIONS[card.id] && QUESTION_TRANSLATIONS[card.id][lang]) {
+      return QUESTION_TRANSLATIONS[card.id][lang];
+    }
+    if (typeof card.question === 'string') {
+      return card.question;
+    }
+  }
+
+  // 2. If passed string directly
+  if (typeof cardOrQuestion === 'string') {
+    return cardOrQuestion;
+  }
+
+  return '';
 }

@@ -4,8 +4,6 @@
       <!-- Left: Clean Editorial Logotype -->
       <div class="brand-group" @click="$emit('reset-to-home')" title="Kembali ke Beranda">
         <span class="brand-name font-editorial">Tentang Kita<span class="brand-dot">.</span></span>
-        <span class="brand-divider">/</span>
-        <span class="brand-sub font-sans">{{ t('brandSub') }}</span>
       </div>
 
       <!-- Right: Desktop Action Icons -->

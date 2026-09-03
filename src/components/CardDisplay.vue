@@ -61,22 +61,22 @@
           <div class="card-back-top font-sans">
             <div class="tags-group">
               <span class="edition-tag">
-                {{ getShortEditionTitle() }}
+                {{ localizedEditionTitle }}
               </span>
               <span class="tag-slash" v-if="card.category">/</span>
               <span class="category-tag" v-if="card.category">
-                {{ getLocalizedCategory(card.category) }}
+                {{ localizedCategory }}
               </span>
             </div>
             <span class="level-indicator" :class="`level-${card.level}`">
-              {{ getLevelText(card.level) }}
+              {{ localizedLevelText }}
             </span>
           </div>
 
           <!-- Question Content Center -->
           <div class="card-back-center">
             <p class="question-text font-editorial">
-              "{{ getLocalizedQuestion(card.question) }}"
+              "{{ localizedQuestion }}"
             </p>
           </div>
 
@@ -112,7 +112,7 @@
 import { computed } from 'vue';
 import { EDITIONS } from '../data/questions.js';
 import { playCardFlipSound, playButtonClickSound } from '../utils/audio.js';
-import { t, getLocalizedField, getLocalizedCategory, currentLang } from '../utils/i18n.js';
+import { t, getLocalizedField, getLocalizedCategory, getLocalizedQuestion, currentLang } from '../utils/i18n.js';
 
 const props = defineProps({
   card: {
@@ -201,13 +201,25 @@ function getLevelText(level) {
   return `Level ${level}`;
 }
 
-function getLocalizedQuestion(qField) {
-  if (!qField) return '';
-  if (typeof qField === 'object') {
-    return getLocalizedField(qField);
-  }
-  return qField;
-}
+const localizedQuestion = computed(() => {
+  const _lang = currentLang.value;
+  return getLocalizedQuestion(props.card);
+});
+
+const localizedCategory = computed(() => {
+  const _lang = currentLang.value;
+  return getLocalizedCategory(props.card?.category);
+});
+
+const localizedEditionTitle = computed(() => {
+  const _lang = currentLang.value;
+  return getShortEditionTitle();
+});
+
+const localizedLevelText = computed(() => {
+  const _lang = currentLang.value;
+  return getLevelText(props.card?.level);
+});
 </script>
 
 <style scoped>
@@ -356,9 +368,9 @@ function getLocalizedQuestion(qField) {
 
 .card-back-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
   position: relative;
   z-index: 2;
   width: 100%;
@@ -368,9 +380,8 @@ function getLocalizedQuestion(qField) {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  white-space: nowrap;
-  min-width: 0;
-  overflow: hidden;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .edition-tag {
@@ -406,7 +417,7 @@ function getLocalizedQuestion(qField) {
   border: 1px solid var(--border-light);
   color: var(--text-muted);
   white-space: nowrap;
-  flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .card-back-center {
