@@ -230,12 +230,14 @@ function toggleAudio() {
 <style scoped>
 .nav-header {
   border-bottom: 1px solid var(--border-light);
-  background-color: rgba(250, 247, 242, 0.85);
-  backdrop-filter: blur(10px);
+  background-color: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   padding: 0.95rem 0;
+  box-shadow: 0 4px 20px -5px rgba(45, 42, 38, 0.05);
 }
 
 .nav-content {
