@@ -58,17 +58,17 @@
           <div class="card-inner-border"></div>
 
           <!-- Back Top Bar -->
-          <div class="card-back-top">
+          <div class="card-back-top font-sans">
             <div class="tags-group">
-              <span class="edition-tag font-sans">
-                {{ getLocalizedField(editionData.title) }}
+              <span class="edition-tag">
+                {{ getShortEditionTitle() }}
               </span>
-              <span class="tag-separator" v-if="card.category">•</span>
-              <span class="category-tag font-sans" v-if="card.category">
-                {{ getLocalizedField(card.category) }}
+              <span class="tag-slash" v-if="card.category">/</span>
+              <span class="category-tag" v-if="card.category">
+                {{ getLocalizedCategory(card.category) }}
               </span>
             </div>
-            <span class="level-indicator font-sans" :class="`level-${card.level}`">
+            <span class="level-indicator" :class="`level-${card.level}`">
               {{ getLevelText(card.level) }}
             </span>
           </div>
@@ -76,14 +76,14 @@
           <!-- Question Content Center -->
           <div class="card-back-center">
             <p class="question-text font-editorial">
-              "{{ getLocalizedField(card.question) }}"
+              "{{ getLocalizedQuestion(card.question) }}"
             </p>
           </div>
 
           <!-- Back Bottom Bar -->
           <div class="card-back-bottom" @click.stop>
             <button 
-              class="btn-save-card" 
+              class="btn-save-card font-sans" 
               :class="{ 'is-saved': isSaved }"
               @click="toggleSave"
               :title="t('saveQuestion')"
@@ -94,12 +94,12 @@
               <span>{{ isSaved ? t('saved') : t('saveQuestion') }}</span>
             </button>
 
-            <button class="btn-flip-back" @click="$emit('toggle-flip')" title="Tutup Kartu">
+            <button class="btn-flip-back font-sans" @click="$emit('toggle-flip')" :title="t('closeCard')">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="1 4 1 10 7 10"></polyline>
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
               </svg>
-              <span>Balik</span>
+              <span>{{ t('flipCard') }}</span>
             </button>
           </div>
         </div>
@@ -112,7 +112,7 @@
 import { computed } from 'vue';
 import { EDITIONS } from '../data/questions.js';
 import { playCardFlipSound, playButtonClickSound } from '../utils/audio.js';
-import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
+import { t, getLocalizedField, getLocalizedCategory, currentLang } from '../utils/i18n.js';
 
 const props = defineProps({
   card: {
@@ -140,54 +140,9 @@ const props = defineProps({
 const emit = defineEmits(['toggle-flip', 'toggle-save']);
 
 const editionData = computed(() => {
-  if (!props.card) return {};
-  return EDITIONS[props.card.edition] || {
-    title: 'Tentang Kita',
-    subtitle: 'Edsi Spesial',
-    themeColor: '#D4A373',
-    cardBg: '#FFFDF9'
-  };
+  const edKey = props.card.edition || 'pasangan';
+  return EDITIONS[edKey] || EDITIONS.pasangan;
 });
-
-function getLocalizedEditionBadge() {
-  const lang = currentLang.value;
-  if (lang === 'en') return 'Card Edition';
-  if (lang === 'jp') return 'カードエディション';
-  return 'Edisi Kartu';
-}
-
-function getCardIndexText() {
-  const lang = currentLang.value;
-  if (lang === 'en') return `Card ${props.currentCardIndex + 1} of ${props.totalCards}`;
-  if (lang === 'jp') return `全${props.totalCards}枚中 ${props.currentCardIndex + 1}枚目`;
-  return `Kartu ${props.currentCardIndex + 1} dari ${props.totalCards}`;
-}
-
-function getLevelText(level) {
-  const lang = currentLang.value;
-  if (lang === 'en') {
-    switch (level) {
-      case 1: return 'Level 1 • Light';
-      case 2: return 'Level 2 • Deep';
-      case 3: return 'Level 3 • Intense';
-      default: return 'Level 1';
-    }
-  }
-  if (lang === 'jp') {
-    switch (level) {
-      case 1: return 'レベル1 • ライト';
-      case 2: return 'レベル2 • ディープ';
-      case 3: return 'レベル3 • シリアス';
-      default: return 'レベル1';
-    }
-  }
-  switch (level) {
-    case 1: return 'Tingkat 1 • Ringan';
-    case 2: return 'Tingkat 2 • Mendalam';
-    case 3: return 'Tingkat 3 • Serius';
-    default: return 'Tingkat 1';
-  }
-}
 
 function handleCardClick() {
   playCardFlipSound();
@@ -198,6 +153,61 @@ function toggleSave() {
   playButtonClickSound();
   emit('toggle-save', props.card);
 }
+
+function getLocalizedEditionBadge() {
+  const lang = currentLang.value;
+  if (lang === 'en') return 'CARD EDITION';
+  if (lang === 'jp') return 'カードエディション';
+  return 'EDISI KARTU';
+}
+
+function getShortEditionTitle() {
+  const edKey = props.card.edition || 'pasangan';
+  const shortMap = {
+    pasangan: { id: 'Pasangan', en: 'Couples', jp: 'カップル' },
+    sahabat: { id: 'Sahabat', en: 'Friends', jp: '親友' },
+    pernikahan: { id: 'Pernikahan', en: 'Marriage', jp: '結婚' },
+    refleksi: { id: 'Refleksi', en: 'Self-Reflection', jp: '自己内省' },
+    keluarga: { id: 'Keluarga', en: 'Family', jp: '家族' }
+  };
+  const found = shortMap[edKey];
+  if (found) return getLocalizedField(found);
+  return getLocalizedField(editionData.value.title);
+}
+
+function getCardIndexText() {
+  const curr = props.currentCardIndex + 1;
+  const tot = props.totalCards;
+  return `${curr} / ${tot}`;
+}
+
+function getLevelText(level) {
+  const lang = currentLang.value;
+  if (level === 1) {
+    if (lang === 'en') return 'Level 1 • Light';
+    if (lang === 'jp') return 'レベル 1 • ライト';
+    return 'Level 1 • Ringan';
+  }
+  if (level === 2) {
+    if (lang === 'en') return 'Level 2 • Deep';
+    if (lang === 'jp') return 'レベル 2 • ディープ';
+    return 'Level 2 • Mendalam';
+  }
+  if (level === 3) {
+    if (lang === 'en') return 'Level 3 • Reflective';
+    if (lang === 'jp') return 'レベル 3 • 内省';
+    return 'Level 3 • Reflektif';
+  }
+  return `Level ${level}`;
+}
+
+function getLocalizedQuestion(qField) {
+  if (!qField) return '';
+  if (typeof qField === 'object') {
+    return getLocalizedField(qField);
+  }
+  return qField;
+}
 </script>
 
 <style scoped>
@@ -205,14 +215,13 @@ function toggleSave() {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
-  user-select: none;
+  perspective: 1200px;
 }
 
 .card-perspective-container {
-  perspective: 1200px;
   width: 100%;
-  /* 3:4 Slim Portrait Playing Card Ratio */
-  aspect-ratio: 3 / 4.2;
+  aspect-ratio: 5 / 7;
+  position: relative;
 }
 
 .card-3d {
@@ -230,24 +239,34 @@ function toggleSave() {
 
 .card-face {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 12px 32px rgba(45, 42, 38, 0.08);
+  border: 1.5px solid var(--border-medium);
   backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2.2rem 1.8rem;
+  padding: 1.75rem;
+  box-shadow: 0 16px 40px -10px rgba(45, 42, 38, 0.15);
   overflow: hidden;
+}
+
+.card-face-front {
+  z-index: 2;
+}
+
+.card-face-back {
+  transform: rotateY(180deg);
+  z-index: 1;
 }
 
 .card-texture-overlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(45, 42, 38, 0.03) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 0);
   background-size: 16px 16px;
   pointer-events: none;
 }
@@ -260,138 +279,149 @@ function toggleSave() {
   pointer-events: none;
 }
 
-/* Front Face */
-.card-face-front {
-  text-align: center;
-}
-
 .card-front-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
   position: relative;
   z-index: 2;
 }
 
 .front-deck-brand {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text-main);
 }
 
+.brand-dot {
+  color: var(--accent-warm, #D4A373);
+}
+
 .front-deck-badge {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
-  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .card-front-center {
-  margin: auto 0;
+  text-align: center;
   position: relative;
   z-index: 2;
+  padding: 1rem 0.5rem;
 }
 
 .card-front-title {
-  font-size: 2.6rem;
+  font-size: 2.2rem;
   line-height: 1.15;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .card-front-sub {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.45;
   max-width: 280px;
   margin: 0 auto;
 }
 
 .card-front-bottom {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 
 .tap-hint-text {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  opacity: 0.8;
-  animation: pulseHint 2s infinite ease-in-out;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .card-index-indicator {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--text-light);
-}
-
-/* Back Face */
-.card-face-back {
-  transform: rotateY(180deg);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .card-back-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 
 .tags-group {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  gap: 0.35rem;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.edition-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
 }
 
-.tag-separator {
+.tag-slash {
   color: var(--border-medium);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.category-tag {
+  font-size: 0.72rem;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  font-weight: 500;
 }
 
 .level-indicator {
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-full);
   background: var(--bg-main);
-  color: var(--text-muted);
   border: 1px solid var(--border-light);
-}
-
-.level-indicator.level-2 {
-  background: rgba(212, 163, 115, 0.15);
-  color: #B5793E;
-  border-color: rgba(212, 163, 115, 0.3);
-}
-
-.level-indicator.level-3 {
-  background: rgba(200, 90, 90, 0.12);
-  color: #C85A5A;
-  border-color: rgba(200, 90, 90, 0.25);
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .card-back-center {
-  margin: auto 0;
   position: relative;
   z-index: 2;
+  margin: auto 0;
   text-align: center;
+  padding: 1rem 0.5rem;
 }
 
 .question-text {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   line-height: 1.45;
   color: var(--text-main);
+  font-weight: 400;
 }
 
 .card-back-bottom {
@@ -403,45 +433,39 @@ function toggleSave() {
 }
 
 .btn-save-card, .btn-flip-back {
-  background: transparent;
-  border: none;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  padding: 0.4rem 0.6rem;
+  padding: 0.35rem 0.65rem;
   border-radius: var(--radius-sm);
   transition: var(--transition-smooth);
 }
 
 .btn-save-card:hover, .btn-flip-back:hover {
-  background: var(--bg-main);
   color: var(--text-main);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .btn-save-card.is-saved {
-  color: var(--text-main);
+  color: var(--accent-warm, #D4A373);
 }
 
-@keyframes pulseHint {
-  0%, 100% { opacity: 0.6; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(-2px); }
-}
-
-@media (max-width: 640px) {
+@media (max-width: 480px) {
   .card-face {
-    padding: 1.6rem 1.3rem;
+    padding: 1.25rem;
   }
-
   .card-front-title {
-    font-size: 2.1rem;
+    font-size: 1.8rem;
   }
-
   .question-text {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.4;
   }
 }
 </style>

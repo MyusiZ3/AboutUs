@@ -1,9 +1,21 @@
 export const EDITIONS = {
   pasangan: {
     id: 'pasangan',
-    title: 'Edisi Pasangan',
-    subtitle: 'Mengenal Lebih Dalam Karakter, Harapan, dan Perasaan Pasangan',
-    description: 'Dirancang untuk mempererat hubungan asmara melalui ruang diskusi yang jujur dan hangat.',
+    title: {
+      id: 'Edisi Pasangan',
+      en: 'Couples Edition',
+      jp: 'カップルエディション'
+    },
+    subtitle: {
+      id: 'Mengenal Lebih Dalam Karakter, Harapan, dan Perasaan Pasangan',
+      en: 'Understand Personality, Hopes, and Feelings Deeper',
+      jp: 'パートナーの性格、希望、感情をより深く理解する'
+    },
+    description: {
+      id: 'Dirancang untuk mempererat hubungan asmara melalui ruang diskusi yang jujur dan hangat.',
+      en: 'Designed to strengthen romantic bonds through honest and warm discussion.',
+      jp: '率直で温かい対話を通じて恋愛関係を深めるためにデザインされています。'
+    },
     themeColor: '#E8AEB7', // Soft Dusty Rose
     accentColor: '#D4A373',
     cardBg: '#FFF5F6',
@@ -12,9 +24,21 @@ export const EDITIONS = {
   },
   teman: {
     id: 'teman',
-    title: 'Edisi Sahabat & Teman',
-    subtitle: 'Nostalgia, Perspektif Jujur, dan Apresiasi Hubungan Pertemanan',
-    description: 'Pertanyaan eksploratif untuk merayakan kenangan manis dan dinamika persahabatan.',
+    title: {
+      id: 'Edisi Sahabat & Teman',
+      en: 'Friends & Besties Edition',
+      jp: '親友・友達エディション'
+    },
+    subtitle: {
+      id: 'Nostalgia, Perspektif Jujur, dan Apresiasi Hubungan Pertemanan',
+      en: 'Nostalgia, Honest Perspectives, and Friendships Appreciation',
+      jp: 'ノスタルジー、本音の視点、そして友情への感謝'
+    },
+    description: {
+      id: 'Pertanyaan eksploratif untuk merayakan kenangan manis dan dinamika persahabatan.',
+      en: 'Exploratory questions to celebrate sweet memories and friendship dynamics.',
+      jp: '素敵な思い出と友情のダイナミクスを祝う探求的な質問。'
+    },
     themeColor: '#CCD5AE', // Soft Sage Green
     accentColor: '#E9EDC9',
     cardBg: '#F8FAF2',
@@ -23,9 +47,21 @@ export const EDITIONS = {
   },
   pernikahan: {
     id: 'pernikahan',
-    title: 'Edisi Pernikahan & Masa Depan',
-    subtitle: 'Visi Bersama, Pengelolaan Konflik, Komitmen, dan Realita',
-    description: 'Topik esensial tentang prinsip hidup, ekspektasi keluarga, serta rencana jangka panjang.',
+    title: {
+      id: 'Edisi Pernikahan & Masa Depan',
+      en: 'Marriage & Future Edition',
+      jp: '結婚・未来エディション'
+    },
+    subtitle: {
+      id: 'Visi Bersama, Pengelolaan Konflik, Komitmen, dan Realita',
+      en: 'Shared Vision, Conflict Management, Commitment, and Reality',
+      jp: '共有ビジョン、葛藤の管理、コミットメント、リアリティ'
+    },
+    description: {
+      id: 'Topik esensial tentang prinsip hidup, ekspektasi keluarga, serta rencana jangka panjang.',
+      en: 'Essential topics about life principles, family expectations, and long-term plans.',
+      jp: '人生の原則、家族の期待、長期計画についての必須トピック。'
+    },
     themeColor: '#D4A373', // Soft Terracotta / Sand
     accentColor: '#FAEDCD',
     cardBg: '#FFFDF9',
@@ -34,9 +70,21 @@ export const EDITIONS = {
   },
   refleksi: {
     id: 'refleksi',
-    title: 'Edisi Refleksi & Diri Sendiri',
-    subtitle: 'Eksplorasi Kebatinan, Kerentanan, Nilai Hidup, dan Pendewasaan',
-    description: 'Pertanyaan penuh makna untuk memahami pemikiran paling pribadi tentang hidup.',
+    title: {
+      id: 'Edisi Refleksi & Diri Sendiri',
+      en: 'Self-Reflection Edition',
+      jp: '自己内省エディション'
+    },
+    subtitle: {
+      id: 'Eksplorasi Kebatinan, Kerentanan, Nilai Hidup, dan Pendewasaan',
+      en: 'Inner Exploration, Vulnerability, Life Values, and Growth',
+      jp: '内面の探求、弱さ、人生観、段々の成長'
+    },
+    description: {
+      id: 'Pertanyaan penuh makna untuk memahami pemikiran paling pribadi tentang hidup.',
+      en: 'Meaningful questions to understand your most personal thoughts on life.',
+      jp: '人生に関する最も個人的な思考を理解するための意味深い質問。'
+    },
     themeColor: '#B8C0E0', // Soft Lavender Slate
     accentColor: '#D8B4E2',
     cardBg: '#F9F8FC',
@@ -45,9 +93,21 @@ export const EDITIONS = {
   },
   keluarga: {
     id: 'keluarga',
-    title: 'Edisi Keluarga & Nostalgia',
-    subtitle: 'Akar Masa Kecil, Hubungan Orang Tua, dan Harapan Antar Generasi',
-    description: 'Menelusuri sejarah keluarga, nilai-nilai yang diturunkan, dan momen yang membentuk diri.',
+    title: {
+      id: 'Edisi Keluarga & Nostalgia',
+      en: 'Family & Heritage Edition',
+      jp: '家族・ノスタルジーエディション'
+    },
+    subtitle: {
+      id: 'Akar Masa Kecil, Hubungan Orang Tua, dan Harapan Antar Generasi',
+      en: 'Childhood Roots, Parental Bonds, and Intergenerational Hopes',
+      jp: '幼少期のルーツ、親との絆、世代間の希望'
+    },
+    description: {
+      id: 'Menelusuri sejarah keluarga, nilai-nilai yang diturunkan, dan momen yang membentuk diri.',
+      en: 'Tracing family history, passed-down values, and moments that shaped you.',
+      jp: '家族の歴史、引き継がれた価値観、あなたを形作った瞬間をたどる。'
+    },
     themeColor: '#D6CCC2', // Soft Warm Grey / Taupe
     accentColor: '#F5EBE0',
     cardBg: '#FAF8F5',

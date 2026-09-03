@@ -46,7 +46,7 @@
         <div class="mobile-turn-bar font-sans">
           <div class="mobile-turn-row">
             <span class="mobile-turn-label font-sans">{{ t('turnLabel') }}</span>
-            <span class="mobile-turn-player font-editorial">{{ players[currentPlayerIndex] }}</span>
+            <span class="mobile-turn-player font-editorial">{{ formatPlayerName(players[currentPlayerIndex]) }}</span>
           </div>
           <div class="mobile-progress-bar-wrap">
             <div class="progress-bar-bg">
@@ -79,7 +79,7 @@
               <div class="dashboard-top desktop-turn-info">
                 <div class="panel-header">
                   <span class="panel-subtitle font-sans">{{ t('turnLabel') }}</span>
-                  <h2 class="panel-player-name font-editorial">{{ players[currentPlayerIndex] }}</h2>
+                  <h2 class="panel-player-name font-editorial">{{ formatPlayerName(players[currentPlayerIndex]) }}</h2>
                 </div>
 
                 <!-- Players list -->
@@ -91,7 +91,7 @@
                     :class="{ active: currentPlayerIndex === idx }"
                   >
                     <span class="chip-status-dot"></span>
-                    <span class="chip-player-name">{{ player }}</span>
+                    <span class="chip-player-name">{{ formatPlayerName(player) }}</span>
                   </div>
                 </div>
               </div>
@@ -212,7 +212,7 @@ import EditionDrawer from './components/EditionDrawer.vue';
 
 import { QUESTIONS } from './data/questions.js';
 import { playCardFlipSound, playButtonClickSound } from './utils/audio.js';
-import { t } from './utils/i18n.js';
+import { t, formatPlayerName } from './utils/i18n.js';
 
 function getFilteredQuestions(editionId, levelFilter) {
   let list = QUESTIONS;

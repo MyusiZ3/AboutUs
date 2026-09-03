@@ -9,7 +9,7 @@
 
     <div class="setup-card">
       <!-- Section 1: Player Setup -->
-      <div class="setup-section">
+      <div class="setup-section font-sans">
         <div class="section-label-group">
           <span class="section-num">01</span>
           <h2 class="section-title">{{ t('playersTitle') }}</h2>
@@ -46,7 +46,7 @@
       <div class="section-divider"></div>
 
       <!-- Section 2: Edition Selection -->
-      <div class="setup-section">
+      <div class="setup-section font-sans">
         <div class="section-label-group">
           <span class="section-num">02</span>
           <h2 class="section-title">{{ t('editionTitle') }}</h2>
@@ -89,7 +89,7 @@
       <div class="section-divider"></div>
 
       <!-- Section 3: Level / Depth Filter -->
-      <div class="setup-section">
+      <div class="setup-section font-sans">
         <div class="section-label-group">
           <span class="section-num">03</span>
           <h2 class="section-title">{{ t('depthTitle') }}</h2>
@@ -115,7 +115,7 @@
       </div>
 
       <!-- Action Footer -->
-      <div class="setup-actions">
+      <div class="setup-actions font-sans">
         <button class="btn btn-primary btn-start" @click="handleStart">
           <span>{{ t('startGame') }}</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -129,7 +129,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { EDITIONS, QUESTIONS } from '../data/questions.js';
 import { playButtonClickSound } from '../utils/audio.js';
 import { t, getLocalizedField, currentLang } from '../utils/i18n.js';
@@ -138,9 +138,20 @@ const emit = defineEmits(['start-game']);
 
 const editions = EDITIONS;
 const playerCount = ref(2);
-const playerNames = ref(['Pemain 1', 'Pemain 2']);
+const playerNames = ref([`${t('playerPrefix')} 1`, `${t('playerPrefix')} 2`]);
 const selectedEditionId = ref('pasangan');
 const selectedLevel = ref(0); // 0 = Semua Tingkat
+
+watch(currentLang, () => {
+  // Automatically adjust default player names if unchanged
+  const prefix = t('playerPrefix');
+  playerNames.value = playerNames.value.map((name, idx) => {
+    if (!name || name.match(/^(Pemain|Player|プレイヤー)\s+\d+$/i)) {
+      return `${prefix} ${idx + 1}`;
+    }
+    return name;
+  });
+});
 
 function getCardCounts(editionId) {
   let list = QUESTIONS;
@@ -220,25 +231,26 @@ function handleStart() {
 
 .setup-header {
   text-align: center;
-  max-width: 620px;
-  margin: 0 auto 2.5rem auto;
+  margin-bottom: 2.5rem;
 }
 
 .setup-title {
-  font-size: 2.3rem;
+  font-size: 2.4rem;
   color: var(--text-main);
   margin-bottom: 0.75rem;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .setup-desc {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
   line-height: 1.6;
 }
 
 .setup-card {
-  background-color: var(--bg-surface);
+  background: var(--bg-surface);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
@@ -258,14 +270,13 @@ function handleStart() {
 }
 
 .section-num {
-  font-family: monospace;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-light);
   background: var(--bg-main);
-  padding: 0.25rem 0.55rem;
-  border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
 }
 
 .section-title {
@@ -274,28 +285,31 @@ function handleStart() {
   color: var(--text-main);
 }
 
+.player-count-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .input-label {
   font-size: 0.85rem;
-  font-weight: 600;
   color: var(--text-muted);
-  display: block;
-  margin-bottom: 0.5rem;
 }
 
 .count-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
 }
 
 .count-btn {
-  padding: 0.6rem 1.1rem;
+  padding: 0.6rem 1.25rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   background: var(--bg-main);
   color: var(--text-main);
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: var(--transition-smooth);
 }
@@ -306,7 +320,7 @@ function handleStart() {
 
 .count-btn.active {
   background: var(--text-main);
-  color: var(--bg-surface);
+  color: var(--bg-main);
   border-color: var(--text-main);
 }
 
@@ -314,106 +328,109 @@ function handleStart() {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-  margin-top: 0.5rem;
+}
+
+.name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .field-label {
   font-size: 0.78rem;
   color: var(--text-muted);
-  display: block;
-  margin-bottom: 0.35rem;
 }
 
 .name-input {
-  width: 100%;
   padding: 0.65rem 0.85rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-medium);
-  background: var(--bg-surface);
-  font-size: 0.9rem;
+  background: var(--bg-main);
   color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
   transition: var(--transition-smooth);
 }
 
 .name-input:focus {
-  outline: none;
   border-color: var(--text-main);
+  box-shadow: 0 0 0 3px rgba(45, 42, 38, 0.08);
 }
 
 .section-divider {
   height: 1px;
-  background-color: var(--border-light);
-  margin: 2.25rem 0;
+  background: var(--border-light);
+  margin: 2rem 0;
 }
 
 .editions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
 }
 
 .edition-card {
-  border: 1px solid var(--border-medium);
+  padding: 1.25rem;
   border-radius: var(--radius-md);
-  padding: 1.4rem;
-  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  background: var(--card-bg, var(--bg-main));
   cursor: pointer;
   transition: var(--transition-smooth);
-  position: relative;
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
 }
 
 .edition-card:hover {
+  border-color: var(--card-accent, var(--text-main));
   transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-  border-color: var(--text-main);
 }
 
 .edition-card.active {
-  border-color: var(--text-main);
-  background-color: var(--card-bg, #FFFDF9);
-  box-shadow: 0 0 0 1px var(--text-main);
+  border-color: var(--card-accent, var(--text-main));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .edition-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.85rem;
 }
 
 .edition-count-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--text-muted);
-  background: rgba(45, 42, 38, 0.05);
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-full);
+  text-transform: uppercase;
 }
 
 .check-mark {
-  color: var(--text-main);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-main);
+  color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
   font-weight: 700;
-  font-size: 1rem;
 }
 
 .edition-card-title {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   color: var(--text-main);
-  margin-bottom: 0.4rem;
 }
 
 .edition-card-desc {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   line-height: 1.45;
 }
 
 .combined-card {
-  background-color: #FAF6F0;
+  background: var(--bg-main);
 }
 
 .level-options {
@@ -485,37 +502,32 @@ function handleStart() {
 }
 
 .level-desc {
-  font-size: 0.83rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .setup-actions {
   margin-top: 2.5rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .btn-start {
-  padding: 0.9rem 2.2rem;
-  font-size: 1rem;
+  padding: 1rem 3rem;
+  font-size: 1.05rem;
   border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .setup-card {
     padding: 1.5rem;
   }
-
   .setup-title {
     font-size: 1.8rem;
   }
-
-  .btn-start {
-    width: 100%;
-    justify-content: center;
+  .editions-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

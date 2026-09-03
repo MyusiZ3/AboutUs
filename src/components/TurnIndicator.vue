@@ -2,7 +2,7 @@
   <div class="turn-bar-container container-narrow">
     <div class="turn-bar">
       <!-- Player Queue / Avatars -->
-      <div class="players-chips">
+      <div class="players-chips font-sans">
         <div 
           v-for="(player, idx) in players" 
           :key="idx"
@@ -16,16 +16,16 @@
 
       <!-- Current Turn Highlight -->
       <div class="current-turn-banner">
-        <span class="turn-label">Giliran Berbicara</span>
+        <span class="turn-label font-sans">{{ t('turnLabel') }}</span>
         <h3 class="turn-player-name font-editorial">{{ currentPlayerName }}</h3>
       </div>
 
       <!-- Progress Ticker -->
-      <div class="deck-progress">
+      <div class="deck-progress font-sans">
         <div class="progress-track">
           <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
         </div>
-        <span class="progress-text">{{ answeredCount }} / {{ totalCount }} Terjawab</span>
+        <span class="progress-text">{{ answeredCount }} / {{ totalCount }} {{ t('cardsAnswered') }}</span>
       </div>
     </div>
   </div>
@@ -33,6 +33,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { t } from '../utils/i18n.js';
 
 const props = defineProps({
   players: {
@@ -54,7 +55,7 @@ const props = defineProps({
 });
 
 const currentPlayerName = computed(() => {
-  return props.players[props.currentPlayerIndex] || 'Pemain 1';
+  return props.players[props.currentPlayerIndex] || `${t('playerPrefix')} 1`;
 });
 
 const progressPercent = computed(() => {

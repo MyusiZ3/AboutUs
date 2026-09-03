@@ -3,27 +3,27 @@
     <div class="controls-grid">
       <!-- Main Action: Next Turn / Answered -->
       <button 
-        class="btn btn-primary btn-next-turn"
+        class="btn btn-primary btn-next-turn font-sans"
         @click="handleNextTurn"
       >
-        <span>Lanjut Giliran Pemain</span>
+        <span>{{ t('nextTurn') }}</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </button>
 
       <!-- Secondary Controls -->
-      <div class="secondary-actions">
+      <div class="secondary-actions font-sans">
         <button 
           class="btn btn-secondary"
           @click="handleSkip"
-          title="Tarik kartu lain tanpa mengubah giliran"
+          :title="t('changeCard')"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="13 17 18 12 13 7"></polyline>
             <polyline points="6 17 11 12 6 7"></polyline>
           </svg>
-          <span>Ganti Kartu</span>
+          <span>{{ t('changeCard') }}</span>
         </button>
 
         <button 
@@ -36,7 +36,7 @@
             <rect x="14" y="14" width="7" height="7"></rect>
             <rect x="3" y="14" width="7" height="7"></rect>
           </svg>
-          <span>Pilih Edisi</span>
+          <span>{{ t('changeEdition') }}</span>
         </button>
 
         <button 
@@ -47,7 +47,7 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          <span>Selesai Sesi</span>
+          <span>{{ t('finishSession') }}</span>
         </button>
       </div>
     </div>
@@ -56,6 +56,7 @@
 
 <script setup>
 import { playButtonClickSound } from '../utils/audio.js';
+import { t } from '../utils/i18n.js';
 
 const emit = defineEmits(['next-turn', 'skip-card', 'open-edition-drawer', 'finish-session']);
 
