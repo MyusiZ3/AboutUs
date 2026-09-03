@@ -524,7 +524,7 @@ function handleStart() {
     padding: 1.5rem;
   }
   .setup-title {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
   .editions-grid {
     grid-template-columns: 1fr;
