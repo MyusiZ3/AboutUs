@@ -112,6 +112,7 @@ body {
   transition: var(--transition-smooth);
   user-select: none;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-primary {

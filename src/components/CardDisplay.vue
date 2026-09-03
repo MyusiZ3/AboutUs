@@ -467,6 +467,13 @@ const localizedLevelText = computed(() => {
   color: var(--accent-warm, #D4A373);
 }
 
+@media (max-width: 640px) {
+  .card-display-wrapper {
+    max-width: min(340px, 86vw);
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 480px) {
   .card-face {
     padding: 1.25rem;

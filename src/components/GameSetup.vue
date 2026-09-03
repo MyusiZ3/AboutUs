@@ -408,6 +408,9 @@ function handleStart() {
 .check-mark {
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--text-main);
   color: var(--bg-main);

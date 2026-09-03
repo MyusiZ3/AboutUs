@@ -42,18 +42,27 @@
 
       <!-- GAMEPLAY VIEW (Zero-Scroll Dual Panel Layout) -->
       <div v-else class="gameplay-viewport container-wide">
-        <!-- Compact Top Turn Bar for Mobile Only -->
+        <!-- Compact Floating Bottom Turn Dock for Mobile Only -->
         <div class="mobile-turn-bar font-sans">
           <div class="mobile-turn-row">
-            <span class="mobile-turn-label font-sans">{{ t('turnLabel') }}</span>
-            <span class="mobile-turn-player font-editorial">{{ formatPlayerName(players[currentPlayerIndex]) }}</span>
-          </div>
-          <div class="mobile-progress-bar-wrap">
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
+            <div class="mobile-turn-meta">
+              <span class="mobile-turn-label font-sans">{{ t('turnLabel') }}</span>
+              <span class="mobile-turn-player font-editorial">{{ formatPlayerName(players[currentPlayerIndex]) }}</span>
             </div>
             <span class="mobile-progress-text">{{ history.length }} / {{ deck.length }} {{ t('cardsAnswered') }}</span>
           </div>
+          <div class="progress-bar-bg mobile-progress-slim">
+            <div class="progress-bar-fill" :style="{ width: progressPercent + '%' }"></div>
+          </div>
+          <button 
+            class="btn btn-primary btn-next-turn-dock"
+            @click="nextTurn"
+          >
+            <span>{{ t('nextTurn') }}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
 
         <div class="gameplay-split-grid">
@@ -109,7 +118,7 @@
               <!-- Bottom: Actions -->
               <div class="dashboard-actions">
                 <button 
-                  class="btn btn-primary btn-next-turn-large"
+                  class="btn btn-primary btn-next-turn-large desktop-turn-btn"
                   @click="nextTurn"
                 >
                   <span>{{ t('nextTurn') }}</span>
@@ -353,7 +362,7 @@ function resetToHome() {
   flex-direction: column;
   position: relative;
   background-color: var(--bg-main);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .bg-accent-decor {
@@ -605,25 +614,127 @@ function resetToHome() {
 }
 
 @media (max-width: 860px) {
+  .gameplay-viewport {
+    padding-top: 1rem;
+    padding-bottom: 7.5rem;
+    justify-content: flex-start;
+  }
+
   .gameplay-split-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
+  /* Floating Bottom Dock on Mobile (Turn Info + Slim Progress + Lanjut CTA) */
   .mobile-turn-bar {
     display: block;
+    position: fixed;
+    bottom: max(0.85rem, env(safe-area-inset-bottom));
+    left: 1rem;
+    right: 1rem;
+    width: calc(100% - 2rem);
+    max-width: 440px;
+    margin: 0 auto;
+    background: rgba(250, 247, 242, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 0.85rem;
+    z-index: 90;
+    box-shadow: 0 12px 32px -6px rgba(45, 42, 38, 0.25);
   }
 
-  .desktop-turn-info {
-    display: none;
+  .mobile-turn-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+  }
+
+  .mobile-turn-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+
+  .mobile-turn-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .mobile-turn-player {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .mobile-progress-text {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .mobile-progress-slim {
+    height: 3px;
+    margin-bottom: 0.65rem;
+  }
+
+  .btn-next-turn-dock {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.98rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .desktop-turn-info,
+  .desktop-turn-btn {
+    display: none !important;
   }
 
   .dashboard-panel {
-    padding: 1.25rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
   }
 
   .dashboard-divider {
-    margin: 0.5rem 0 1rem 0;
+    display: none;
+  }
+
+  .dashboard-actions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quick-action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .quick-action-grid button {
+    font-size: 0.82rem;
+    padding: 0.65rem 0.75rem;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .quick-action-grid button svg {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>

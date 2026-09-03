@@ -141,9 +141,19 @@ function selectEdition(key) {
   color: var(--text-muted);
 }
 
+.item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-right: 0.75rem;
+}
+
 .check-icon {
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--text-main);
   color: var(--bg-main);

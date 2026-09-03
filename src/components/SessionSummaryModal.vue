@@ -192,17 +192,35 @@ watch(() => props.isOpen, (newVal) => {
 
 .summary-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   justify-content: flex-end;
 }
 
 .summary-actions button {
   flex: 1;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+}
+
+.summary-actions button span {
+  white-space: nowrap;
 }
 
 @media (max-width: 640px) {
   .stats-overview {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .summary-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .summary-actions button {
+    width: 100%;
+    white-space: nowrap;
   }
 }
 </style>
