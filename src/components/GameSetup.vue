@@ -524,18 +524,10 @@ function handleStart() {
     padding: 1.5rem;
   }
   .setup-title {
-    font-size: clamp(1.05rem, 4.7vw, 1.6rem);
-    white-space: nowrap;
+    font-size: 1.5rem;
   }
   .editions-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 400px) {
-  .setup-title {
-    font-size: clamp(0.9rem, 4.3vw, 1.25rem);
-    white-space: nowrap;
   }
 }
 </style>
