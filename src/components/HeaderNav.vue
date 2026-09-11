@@ -18,7 +18,7 @@
             @click="setLanguage(lang.code)"
             :title="lang.name"
           >
-            <span class="lang-flag">{{ lang.flag }}</span>
+            <span class="lang-flag" v-html="lang.flagSvg || lang.flag"></span>
             <span>{{ lang.label }}</span>
           </button>
         </div>
@@ -85,6 +85,7 @@
             @click="setLanguage(lang.code)"
             :title="lang.name"
           >
+            <span class="lang-flag" v-html="lang.flagSvg || lang.flag"></span>
             <span>{{ lang.label }}</span>
           </button>
         </div>
@@ -129,7 +130,7 @@
                   :class="{ active: currentLang === lang.code }"
                   @click="setLanguage(lang.code)"
                 >
-                  <span class="lang-flag">{{ lang.flag }}</span>
+                  <span class="lang-flag" v-html="lang.flagSvg || lang.flag"></span>
                   <span>{{ lang.name }}</span>
                 </button>
               </div>
@@ -331,8 +332,19 @@ function toggleAudio() {
 }
 
 .lang-flag {
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
+}
+
+.lang-flag-svg {
+  width: 16px;
+  height: 11px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  display: block;
+  flex-shrink: 0;
 }
 
 .saved-count {

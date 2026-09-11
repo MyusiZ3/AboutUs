@@ -1,9 +1,27 @@
 import { ref } from 'vue';
 
 export const LANGUAGES = [
-  { code: 'id', label: 'ID', flag: '🇮🇩', name: 'Indonesia' },
-  { code: 'en', label: 'EN', flag: '🇬🇧', name: 'English' },
-  { code: 'jp', label: 'JP', flag: '🇯🇵', name: '日本語' }
+  { 
+    code: 'id', 
+    label: 'ID', 
+    flag: '🇮🇩', 
+    flagSvg: `<svg class="lang-flag-svg" viewBox="0 0 30 20" width="16" height="11"><rect width="30" height="10" fill="#E70011"/><rect y="10" width="30" height="10" fill="#FFFFFF"/></svg>`,
+    name: 'Indonesia' 
+  },
+  { 
+    code: 'en', 
+    label: 'EN', 
+    flag: '🇬🇧', 
+    flagSvg: `<svg class="lang-flag-svg" viewBox="0 0 60 40" width="16" height="11"><rect width="60" height="40" fill="#012169"/><path d="M0,0 L60,40 M60,0 L0,40" stroke="#FFFFFF" stroke-width="8"/><path d="M0,0 L60,40 M60,0 L0,40" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V40 M0,20 H60" stroke="#FFFFFF" stroke-width="12"/><path d="M30,0 V40 M0,20 H60" stroke="#C8102E" stroke-width="7"/></svg>`,
+    name: 'English' 
+  },
+  { 
+    code: 'jp', 
+    label: 'JP', 
+    flag: '🇯🇵', 
+    flagSvg: `<svg class="lang-flag-svg" viewBox="0 0 30 20" width="16" height="11"><rect width="30" height="20" fill="#FFFFFF"/><circle cx="15" cy="10" r="6" fill="#BC002D"/></svg>`,
+    name: '日本語' 
+  }
 ];
 
 const savedLang = typeof localStorage !== 'undefined' ? localStorage.getItem('aboutus_lang') : 'id';
@@ -50,7 +68,7 @@ export const translations = {
     changeEdition: 'Ganti Topik',
     savedCount: 'Tersimpan',
     finishSession: 'Selesai Obrolan',
-    copyright: '© 2026 Arch • Tentang Kita. Hak Cipta Dilindungi.',
+    copyright: '© 2026 Tentang Kita by Arch. Hak Cipta Dilindungi.',
     
     // CardDisplay
     tapToReveal: 'Buka Pertanyaan',
